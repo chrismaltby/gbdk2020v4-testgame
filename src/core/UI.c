@@ -9,10 +9,12 @@
 #include "Input.h"
 #include "Math.h"
 #include "data_ptrs.h"
+#include <gb/bgb_emu.h>
+#include <gb/far_ptr.h>
 
 void UIInit_b();
 void UIUpdate_b();
-void UIReset_b();
+extern void UIReset_b() __banked;
 void UIDrawFrame_b(UBYTE x, UBYTE y, UBYTE width, UBYTE height);
 void UIDrawDialogueFrame_b(UBYTE h);
 void UISetColor_b(UWORD image_index);
@@ -23,6 +25,8 @@ void UIShowMenu_b(UWORD flag_index,
                   UWORD bank_offset,
                   UBYTE layout,
                   UBYTE cancel_config);
+
+FAR_PTR fpUIReset_b = TO_FAR_PTR(&UIReset_b, UI_BANK);
 
 UBYTE ui_block = FALSE;
 UBYTE win_pos_x;
@@ -72,9 +76,8 @@ void UIUpdate() {
 }
 
 void UIReset() {
-  PUSH_BANK(UI_BANK);
-  UIReset_b();
-  POP_BANK;
+  BGB_MESSAGE("UI RESET");
+  FAR_CALL(fpUIReset_b,  void (*)(void));
 }
 
 void UIDrawFrame(UBYTE x, UBYTE y, UBYTE width, UBYTE height) {

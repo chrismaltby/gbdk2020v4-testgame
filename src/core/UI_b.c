@@ -9,6 +9,7 @@
 #include "data_ptrs.h"
 #include "Math.h"
 #include <string.h>
+#include <gb/bgb_emu.h>
 
 #define FRAME_CENTER_OFFSET 64
 
@@ -130,7 +131,8 @@ void UIInit_b() {
   SetBankedBkgData(CURSOR_BANK, 0xCB, 1, ptr);
 }
 
-void UIReset_b() {
+void UIReset_b() __banked {
+  BGB_MESSAGE("UI RESET_Bc");
   UISetPos(0, 144);
 }
 

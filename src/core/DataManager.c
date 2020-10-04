@@ -14,8 +14,12 @@
 #include "Input.h"
 #include "data_ptrs.h"
 #include "bank_9.h"
+#include <gb/bgb_emu.h>
+#include <stdio.h>
 
 #define MAX_PLAYER_SPRITE_SIZE 24
+
+UBYTE buf[80];
 
 BankPtr bank_ptr;
 UBYTE image_bank;
@@ -37,6 +41,8 @@ void LoadTiles(UINT16 index) {
   UBYTE bank, size;
   UBYTE* data_ptr;
 
+  BGB_MESSAGE_FMT(buf, "Load Tiles %u = (256 * %u) + %u", index, index>>8, index & 0xFF);
+
   PUSH_BANK(DATA_PTRS_BANK);
   bank = tileset_bank_ptrs[index].bank;
   data_ptr = (UBYTE*)(tileset_bank_ptrs[index].offset + (BankDataPtr(bank)));
@@ -51,6 +57,8 @@ void LoadTiles(UINT16 index) {
 void LoadImage(UINT16 index) {
   UBYTE* data_ptr;
 
+  BGB_MESSAGE_FMT(buf, "Load Image %u = (256 * %u) + %u", index, index>>8, index & 0xFF);
+
   PUSH_BANK(DATA_PTRS_BANK);
   image_bank = background_bank_ptrs[index].bank;
   data_ptr = (UBYTE*)(background_bank_ptrs[index].offset + (BankDataPtr(image_bank)));
@@ -62,6 +70,9 @@ void LoadImage(UINT16 index) {
 
   image_tile_width = *(data_ptr++);
   image_tile_height = *(data_ptr++);
+
+  BGB_MESSAGE_FMT(buf, "Image Size %u / %u", image_tile_width, image_tile_height);
+
   image_width = image_tile_width * 8;
   scroll_x_max = image_width - ((UINT16)SCREENWIDTH);
   image_height = image_tile_height * 8;
@@ -164,6 +175,10 @@ void LoadScene(UINT16 index) {
   UBYTE bank, i, k;
   UBYTE* data_ptr;
 
+  BGB_MESSAGE_FMT(buf, "Load Scene %u", index);
+
+
+
   i++;
 
   PUSH_BANK(9);
@@ -178,22 +193,35 @@ void LoadScene(UINT16 index) {
 
   POP_BANK;
 
-/*
 
   PUSH_BANK(DATA_PTRS_BANK);
+  BGB_MESSAGE_FMT(buf, "Load Data Ptr Bank %u",DATA_PTRS_BANK);
+
+
   bank = scene_bank_ptrs[index].bank;
+
+  BGB_MESSAGE_FMT(buf, "Got Bank %u", bank);
+
   data_ptr = (scene_bank_ptrs[index].offset + (BankDataPtr(bank)));
+
+  BGB_MESSAGE_FMT(buf, "Got data_ptr %u", data_ptr);
 
   collision_bank = collision_bank_ptrs[index].bank;
   collision_ptr =
       (unsigned char*)(collision_bank_ptrs[index].offset + (BankDataPtr(collision_bank)));
   POP_BANK;
 
+
   SpritePoolReset();
   ScriptCtxPoolReset();
 
   PUSH_BANK(bank);
+
+
+
+
   LoadImage((*(data_ptr++) * 256) + *(data_ptr++));
+
   LoadImageAttr(index);
   LoadPalette((*(data_ptr++) * 256) + *(data_ptr++));
   LoadSpritePalette((*(data_ptr++) * 256) + *(data_ptr++));
@@ -201,9 +229,10 @@ void LoadScene(UINT16 index) {
   LoadUIPalette(1);
 
 
-  // UIReset();
+  UIReset();
   RemoveInputScripts();
-
+  
+   /* 
   // ProjectilesInit();
   // InitPlayer();
 
@@ -264,10 +293,9 @@ void LoadScene(UINT16 index) {
 
     actors[i].collisionsEnabled = !actors[i].pinned;
 
-  tmp = *(data_ptr++);
-  tmp = *(data_ptr++);
+    // tmp = *(data_ptr++);
+    // tmp = *(data_ptr++);
 
-    // actors[i].events_ptr.bank = *(data_ptr++);
     // actors[i].events_ptr.bank = *(data_ptr++);
 
     // // tmp = *(data_ptr++);
@@ -290,6 +318,8 @@ void LoadScene(UINT16 index) {
 
   }
 
+
+  /*
   actors_active[0] = 0;
   actors_active_size = 1;
 
@@ -328,6 +358,7 @@ void LoadScene(UINT16 index) {
     }
   }
 
-  POP_BANK;
+
   */
+  POP_BANK; 
 }

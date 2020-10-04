@@ -231,8 +231,7 @@ void LoadScene(UINT16 index) {
 
   UIReset();
   RemoveInputScripts();
-  
-   /* 
+
   // ProjectilesInit();
   // InitPlayer();
 
@@ -319,7 +318,6 @@ void LoadScene(UINT16 index) {
   }
 
 
-  /*
   actors_active[0] = 0;
   actors_active_size = 1;
 
@@ -358,7 +356,7 @@ void LoadScene(UINT16 index) {
     }
   }
 
+  BGB_MESSAGE("LOADED SCENE");
 
-  */
   POP_BANK; 
 }

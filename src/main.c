@@ -7,6 +7,8 @@
 #include "states/TopDown.h"
 #include "states/PointNClick.h"
 #include "DataManager.h"
+#include "Input.h"
+#include "Scroll.h"
 #include <gb/bgb_emu.h>
 
 const Void_Func_Void startFuncs[] = {0, Start_TopDown, Start_Platform, Start_Adventure,
@@ -64,41 +66,57 @@ const unsigned char earth_tiles1[] = {
 
 int main()
 {
-    UBYTE i = 0;
+  UBYTE i = 0;
 
-    disable_interrupts();
-    DISPLAY_OFF;
-    LCDC_REG = 0x67;
+  disable_interrupts();
+  DISPLAY_OFF;
+  LCDC_REG = 0x67;
 
-    /* Set palettes */
-    BGP_REG = OBP0_REG = OBP1_REG = 0xE4U;
+  /* Set palettes */
+  BGP_REG = OBP0_REG = OBP1_REG = 0xE4U;
 
-    set_sprite_data(0x00, 0x1C, earth_data1);
-    set_sprite_prop(0, 0x00);
-    set_sprite_prop(1, 0x00);
-    set_sprite_tile(0, earth_tiles1[0]);
-    set_sprite_tile(1, earth_tiles1[1]);
-    move_sprite(0, 64, 64);
-    move_sprite(1, 64 + 8, 64);
+  set_sprite_data(0x00, 0x1C, earth_data1);
+  set_sprite_prop(0, 0x00);
+  set_sprite_prop(1, 0x00);
+  set_sprite_tile(0, earth_tiles1[0]);
+  set_sprite_tile(1, earth_tiles1[1]);
+  move_sprite(0, 64, 64);
+  move_sprite(1, 64 + 8, 64);
 
-    LoadScene(0);
+  // Position Window Layer
+  WX_REG = 7;
+  WY_REG = MAXWNDPOSY + 1U;
+
+  LoadScene(0);
+
+  DISPLAY_ON;
+  enable_interrupts();
+
+  // core_start();
+
+  RefreshScroll();
 
 
-    DISPLAY_ON;
-    enable_interrupts();
+  while (1)
+  {
+    wait_vbl_done();
 
-    // core_start();
-
-    while (1)
+    last_joy = joy;
+    joy = joypad();
+    if ((joy & INPUT_DPAD) != (last_joy & INPUT_DPAD))
     {
-        wait_vbl_done();
-
-        i++;
-        move_sprite(0, i, 64);
-        move_sprite(1, i + 8, 64);
+      recent_joy = joy & ~last_joy;
     }
 
-    return i;
+    move_sprite(2, joy * 16, 16);
+    move_sprite(3, (joy * 16) + 8, 16);
 
-    // return 0;
+    i++;
+    move_sprite(0, i, 64);
+    move_sprite(1, i + 8, 64);
+  }
+
+  return i;
+
+  // return 0;
 }

@@ -201,6 +201,8 @@ int core_start() {
     }
 
     state_running = TRUE;
+
+
   //   // LoadScene(current_state);
 
   //   // set_sprite_tile(1, 4);

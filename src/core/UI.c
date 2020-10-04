@@ -9,7 +9,6 @@
 #include "Input.h"
 #include "Math.h"
 #include "data_ptrs.h"
-#include <gb/bgb_emu.h>
 #include <gb/far_ptr.h>
 
 void UIInit_b();
@@ -76,7 +75,6 @@ void UIUpdate() {
 }
 
 void UIReset() {
-  BGB_MESSAGE("UI RESET");
   FAR_CALL(fpUIReset_b,  void (*)(void));
 }
 

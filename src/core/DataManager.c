@@ -40,8 +40,6 @@ void LoadTiles(UINT16 index) {
   UBYTE bank, size;
   UBYTE* data_ptr;
 
-  BGB_MESSAGE_FMT(buf, "Load Tiles %u = (256 * %u) + %u", index, index>>8, index & 0xFF);
-
   PUSH_BANK(DATA_PTRS_BANK);
   bank = tileset_bank_ptrs[index].bank;
   data_ptr = (UBYTE*)(tileset_bank_ptrs[index].offset + (BankDataPtr(bank)));
@@ -56,8 +54,6 @@ void LoadTiles(UINT16 index) {
 void LoadImage(UINT16 index) {
   UBYTE* data_ptr;
 
-  BGB_MESSAGE_FMT(buf, "Load Image %u = (256 * %u) + %u", index, index>>8, index & 0xFF);
-
   PUSH_BANK(DATA_PTRS_BANK);
   image_bank = background_bank_ptrs[index].bank;
   data_ptr = (UBYTE*)(background_bank_ptrs[index].offset + (BankDataPtr(image_bank)));
@@ -69,8 +65,6 @@ void LoadImage(UINT16 index) {
 
   image_tile_width = *(data_ptr++);
   image_tile_height = *(data_ptr++);
-
-  BGB_MESSAGE_FMT(buf, "Image Size %u / %u", image_tile_width, image_tile_height);
 
   image_width = image_tile_width * 8;
   scroll_x_max = image_width - ((UINT16)SCREENWIDTH);
@@ -174,15 +168,7 @@ void LoadScene(UINT16 index) {
   UBYTE bank, i, k;
   UBYTE* data_ptr;
 
-  BGB_MESSAGE_FMT(buf, "Load Scene %u", index);
-
-
-
-  i++;
-
   PUSH_BANK(DATA_PTRS_BANK);
-  BGB_MESSAGE_FMT(buf, "Load Data Ptr Bank %u",DATA_PTRS_BANK);
-
 
   bank = scene_bank_ptrs[index].bank;
 
@@ -190,21 +176,15 @@ void LoadScene(UINT16 index) {
 
   data_ptr = (scene_bank_ptrs[index].offset + (BankDataPtr(bank)));
 
-  BGB_MESSAGE_FMT(buf, "Got data_ptr %u", data_ptr);
-
   collision_bank = collision_bank_ptrs[index].bank;
   collision_ptr =
       (unsigned char*)(collision_bank_ptrs[index].offset + (BankDataPtr(collision_bank)));
   POP_BANK;
 
-
   SpritePoolReset();
   ScriptCtxPoolReset();
 
   PUSH_BANK(bank);
-
-
-
 
   LoadImage((*(data_ptr++) * 256) + *(data_ptr++));
 
@@ -334,9 +314,6 @@ void LoadScene(UINT16 index) {
       ActivateActor(i);
     }
   }
-
-
-  BGB_MESSAGE("LOADED SCENE");
 
   POP_BANK; 
 }

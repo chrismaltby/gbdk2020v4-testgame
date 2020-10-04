@@ -65,7 +65,6 @@ void LoadImage(UINT16 index) {
 
   image_tile_width = *(data_ptr++);
   image_tile_height = *(data_ptr++);
-
   image_width = image_tile_width * 8;
   scroll_x_max = image_width - ((UINT16)SCREENWIDTH);
   image_height = image_tile_height * 8;
@@ -169,11 +168,8 @@ void LoadScene(UINT16 index) {
   UBYTE* data_ptr;
 
   PUSH_BANK(DATA_PTRS_BANK);
-
   bank = scene_bank_ptrs[index].bank;
-
   BGB_MESSAGE_FMT(buf, "Got Bank %u", bank);
-
   data_ptr = (scene_bank_ptrs[index].offset + (BankDataPtr(bank)));
 
   collision_bank = collision_bank_ptrs[index].bank;
@@ -185,22 +181,18 @@ void LoadScene(UINT16 index) {
   ScriptCtxPoolReset();
 
   PUSH_BANK(bank);
-
   LoadImage((*(data_ptr++) * 256) + *(data_ptr++));
-
   LoadImageAttr(index);
   LoadPalette((*(data_ptr++) * 256) + *(data_ptr++));
   LoadSpritePalette((*(data_ptr++) * 256) + *(data_ptr++));
   LoadPlayerSpritePalette(0);
   LoadUIPalette(1);
-
-
   UIReset();
   RemoveInputScripts();
 
   ProjectilesInit();
   InitPlayer();
-
+  
   scene_type = (*(data_ptr++)) + 1;
   sprites_len = (*(data_ptr++)) + 1;
   actors_len = (*(data_ptr++)) + 1;
@@ -226,7 +218,6 @@ void LoadScene(UINT16 index) {
     }
     k += sprite_len;
   }
-
 
   // Load actors
   for (i = 1; i != actors_len; i++) {
@@ -277,7 +268,6 @@ void LoadScene(UINT16 index) {
     actors[i].script_control = FALSE;
   }
 
-
   actors_active[0] = 0;
   actors_active_size = 1;
 
@@ -293,6 +283,7 @@ void LoadScene(UINT16 index) {
   }
 
   // Initialise scene
+
   InitScroll();
 
   // Reset last trigger
@@ -315,5 +306,5 @@ void LoadScene(UINT16 index) {
     }
   }
 
-  POP_BANK; 
+  POP_BANK;
 }

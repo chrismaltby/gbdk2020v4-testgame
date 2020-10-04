@@ -66,13 +66,15 @@ const unsigned char earth_tiles1[] = {
 
 int main()
 {
+  core_start();
+
+  /*
   UBYTE i = 0;
 
   disable_interrupts();
   DISPLAY_OFF;
   LCDC_REG = 0x67;
 
-  /* Set palettes */
   BGP_REG = OBP0_REG = OBP1_REG = 0xE4U;
 
   set_sprite_data(0x00, 0x1C, earth_data1);
@@ -118,5 +120,7 @@ int main()
 
   return i;
 
-  // return 0;
+  */
+
+  return 0;
 }

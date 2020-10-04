@@ -79,23 +79,6 @@ const unsigned char earth_tiles[] = {
   0x18,0x1A
 };
 
-/* Set sprite tiles */
-void tile_sprite()
-{
-  UBYTE s;
-
-  s = 0;
-  set_sprite_tile(0, earth_tiles[s]);
-  set_sprite_tile(1, earth_tiles[s+1]);
-}
-
-/* Place sprite */
-void place_sprite()
-{
-  move_sprite(0, 64, 64);
-  move_sprite(1, 64+8, 64);
-}
-
 void SetScene(UINT16 state) {
   state_running = 0;
   next_state = state;
@@ -155,6 +138,20 @@ int core_start() {
   DISPLAY_OFF;
   LCDC_REG = 0x67;
 
+
+
+
+
+
+
+
+  // Position Window Layer
+  WX_REG = 7;
+  WY_REG = MAXWNDPOSY + 1U;
+
+
+
+
   /* Set palettes */
   BGP_REG = OBP0_REG = OBP1_REG = 0xE4U;
 
@@ -162,8 +159,10 @@ int core_start() {
   set_sprite_data(0x00, 0x1C, earth_data);
   set_sprite_prop(0, 0x00);
   set_sprite_prop(1, 0x00);
-  tile_sprite();
-  place_sprite();
+  set_sprite_tile(0, earth_tiles[0]);
+  set_sprite_tile(1, earth_tiles[1]);
+  move_sprite(0, 64, 64);
+  move_sprite(1, 64 + 8, 64);
 
   // LoadScene(current_state);
 
@@ -203,7 +202,8 @@ int core_start() {
     state_running = TRUE;
 
 
-  //   // LoadScene(current_state);
+    LoadScene(current_state);
+    RefreshScroll();
 
   //   // set_sprite_tile(1, 4);
   //   // set_sprite_tile(2, 6);

@@ -6,7 +6,6 @@
 #include "DataManager.h"
 #include "GameTime.h"
 #include "FadeManager.h"
-#include <gb/bgb_emu.h>
 
 INT16 scroll_x = 0;
 INT16 scroll_y = 0;
@@ -208,7 +207,6 @@ void ScrollUpdateColumnWithDelay(INT16 x, INT16 y) {
 }
 
 void RefreshScroll() {
-  BGB_MESSAGE("Refresh Scroll");
   PUSH_BANK(SCROLL_BANK);
   RefreshScroll_b();
   POP_BANK;

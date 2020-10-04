@@ -3,7 +3,6 @@
 #include "DataManager.h"
 #include "GameTime.h"
 #include "Scroll.h"
-#include <gb/bgb_emu.h>
 
 void ScrollUpdateRowWithDelay(INT16 x, INT16 y);
 void ScrollUpdateColumnWithDelay(INT16 x, INT16 y);
@@ -14,8 +13,6 @@ void RefreshScroll_b() {
   INT16 x, y;
   INT16 current_column, new_column, current_row, new_row;
   UBYTE render = FALSE;
-
-  BGB_MESSAGE("Refresh Scroll_b");
 
   x = scroll_target->x - (SCREENWIDTH >> 1);
   y = scroll_target->y - (SCREENHEIGHT >> 1);

@@ -311,7 +311,7 @@ void LoadScene(UINT16 index) {
     actors[i].script_control = FALSE;
   }
 
-  /*
+
   actors_active[0] = 0;
   actors_active_size = 1;
 
@@ -327,7 +327,6 @@ void LoadScene(UINT16 index) {
   }
 
   // Initialise scene
-  */
   InitScroll();
 
   // Reset last trigger

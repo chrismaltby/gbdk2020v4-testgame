@@ -165,6 +165,7 @@ void LoadScene(UINT16 index) {
 
   PUSH_BANK(DATA_PTRS_BANK);
   bank = scene_bank_ptrs[index].bank;
+  actors_len = bank;
   data_ptr = (scene_bank_ptrs[index].offset + (BankDataPtr(bank)));
 
   collision_bank = collision_bank_ptrs[index].bank;

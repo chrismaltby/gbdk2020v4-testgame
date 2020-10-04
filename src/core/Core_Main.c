@@ -29,6 +29,7 @@ UINT8 vbl_count;
 INT16 old_scroll_x, old_scroll_y;
 UINT8 music_mute_frames = 0;
 
+
 const unsigned char earth_data[] = {
 
   /* Tile 0x00 */
@@ -164,7 +165,7 @@ int core_start() {
   tile_sprite();
   place_sprite();
 
-  LoadScene(current_state);
+  // LoadScene(current_state);
 
   DISPLAY_ON;
   enable_interrupts();
@@ -174,32 +175,32 @@ int core_start() {
     while (state_running) {
     /* Game Core Loop Start *********************************/
 
-    if (!vbl_count) {
-      wait_vbl_done();
-    }
-    
-  //   set_sprite_prop(0, 0x00);
-  //   set_sprite_prop(1, 0x00);
-  //   set_sprite_tile(0, earth_tiles[0]);
-  //   set_sprite_tile(1, earth_tiles[1]);
+      if (!vbl_count) {
+        wait_vbl_done();
+      }
+      
+    //   set_sprite_prop(0, 0x00);
+    //   set_sprite_prop(1, 0x00);
+    //   set_sprite_tile(0, earth_tiles[0]);
+    //   set_sprite_tile(1, earth_tiles[1]);
 
-    delta_time = vbl_count == 1u ? 0u : 1u;
-    vbl_count = 0;
+      delta_time = vbl_count == 1u ? 0u : 1u;
+      vbl_count = 0;
 
-    last_joy = joy;
-    joy = joypad();
-    if ((joy & INPUT_DPAD) != (last_joy & INPUT_DPAD)) {
-      recent_joy = joy & ~last_joy;
-    }
+      last_joy = joy;
+      joy = joypad();
+      if ((joy & INPUT_DPAD) != (last_joy & INPUT_DPAD)) {
+        recent_joy = joy & ~last_joy;
+      }
 
 
-    move_sprite(0, joy * 16, 16);
-    move_sprite(1, (joy * 16) + 8, 16);    
+      move_sprite(0, joy * 16, 16);
+      move_sprite(1, (joy * 16) + 8, 16);    
 
     /* Game Core Loop End ***********************************/
     }
 
-  state_running = TRUE;
+    state_running = TRUE;
   //   // LoadScene(current_state);
 
   //   // set_sprite_tile(1, 4);

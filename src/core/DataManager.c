@@ -191,7 +191,7 @@ void LoadScene(UINT16 index) {
 
   ProjectilesInit();
   InitPlayer();
-  /*
+
   scene_type = (*(data_ptr++)) + 1;
   sprites_len = (*(data_ptr++)) + 1;
   actors_len = (*(data_ptr++)) + 1;
@@ -220,7 +220,8 @@ void LoadScene(UINT16 index) {
 
   // Load actors
   for (i = 1; i != actors_len; i++) {
-    UBYTE j;
+    UBYTE j, tmp;
+
 
     actors[i].sprite = *(data_ptr++);
     actors[i].palette_index = *(data_ptr++);
@@ -249,8 +250,11 @@ void LoadScene(UINT16 index) {
     actors[i].collisionsEnabled = !actors[i].pinned;
 
     actors[i].events_ptr.bank = *(data_ptr++);
-    actors[i].events_ptr.offset = *(data_ptr++) + (*(data_ptr++) * 256);
+    // actors[i].events_ptr.bank = *(data_ptr++);
 
+    // tmp = *(data_ptr++);
+    // actors[i].events_ptr.offset = tmp + (*(data_ptr++) * 256);
+/*    
     actors[i].movement_ptr.bank = *(data_ptr++);
     actors[i].movement_ptr.offset = *(data_ptr++) + (*(data_ptr++) * 256);
 
@@ -265,8 +269,9 @@ void LoadScene(UINT16 index) {
 
     actors[i].movement_ctx = 0;
     actors[i].script_control = FALSE;
+    */
   }
-
+  /*
   actors_active[0] = 0;
   actors_active_size = 1;
 

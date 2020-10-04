@@ -17,9 +17,7 @@ const Void_Func_Void updateFuncs[] = {0, Update_TopDown, Update_Platform, Update
                                       Update_Shmup, Update_PointNClick};
 const UBYTE stateBanks[] = {0, 5, 5, 5, 5, 5};
 
-int main()
-{
+int main() {
   core_start();
-
   return 0;
 }

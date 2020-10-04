@@ -232,8 +232,8 @@ void LoadScene(UINT16 index) {
   UIReset();
   RemoveInputScripts();
 
-  // ProjectilesInit();
-  // InitPlayer();
+  ProjectilesInit();
+  InitPlayer();
 
   scene_type = (*(data_ptr++)) + 1;
   sprites_len = (*(data_ptr++)) + 1;

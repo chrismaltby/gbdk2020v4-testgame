@@ -84,76 +84,120 @@ void SetScene(UINT16 state) {
   next_state = state;
 }
 
-// void vbl_update() {
-//   vbl_count++;
+void vbl_update() {
+  vbl_count++;
 
-//   // Update background scroll in vbl
-//   // interupt to prevent tearing
-//   SCX_REG = draw_scroll_x;
-//   SCY_REG = scroll_y;
+  // Update background scroll in vbl
+  // interupt to prevent tearing
+  SCX_REG = draw_scroll_x;
+  SCY_REG = scroll_y;
 
-// #ifdef CGB
-//   if (palette_dirty) {
-//     set_bkg_palette(0, 8, BkgPaletteBuffer);
-//     set_sprite_palette(0, 8, SprPaletteBuffer);
-//     palette_dirty = FALSE;
-//   }
-// #endif
+#ifdef CGB
+  if (palette_dirty) {
+    set_bkg_palette(0, 8, BkgPaletteBuffer);
+    set_sprite_palette(0, 8, SprPaletteBuffer);
+    palette_dirty = FALSE;
+  }
+#endif
 
-//   if (music_mute_frames != 0) {
-//     music_mute_frames--;
-//     if (music_mute_frames == 0) {
-//       gbt_enable_channels(0xF);
-//     }
-//   }
+  if (music_mute_frames != 0) {
+    music_mute_frames--;
+    if (music_mute_frames == 0) {
+      gbt_enable_channels(0xF);
+    }
+  }
 
-//   if (!hide_sprites) {
-//     SHOW_SPRITES;
-//   }
-// }
+  if (!hide_sprites) {
+    SHOW_SPRITES;
+  }
+}
 
-// void lcd_update() {
-//   if (LYC_REG == 0x0) {
-//     if(WY_REG == 0x0) {
-//       HIDE_SPRITES;
-//     }
+void lcd_update() {
+  if (LYC_REG == 0x0) {
+    if(WY_REG == 0x0) {
+      HIDE_SPRITES;
+    }
     
-//     // If UI is open cause lcd interupt
-//     // to fire again when first line of
-//     // window is being drawn
-//     if (WY_REG != MENU_CLOSED_Y) {
-//       LYC_REG = WY_REG;
-//     }
-//   } else if (WX_REG == WIN_LEFT_X) {
-//     // If window is covering entire scan line
-//     // can just hide all sprites until next frame
-//     HIDE_SPRITES;
-//     LYC_REG = 0x0;
-//   }
-// }
+    // If UI is open cause lcd interupt
+    // to fire again when first line of
+    // window is being drawn
+    if (WY_REG != MENU_CLOSED_Y) {
+      LYC_REG = WY_REG;
+    }
+  } else if (WX_REG == WIN_LEFT_X) {
+    // If window is covering entire scan line
+    // can just hide all sprites until next frame
+    HIDE_SPRITES;
+    LYC_REG = 0x0;
+  }
+}
 
 int core_start() {
 
-  disable_interrupts();
-  DISPLAY_OFF;
+#ifdef CGB
+  if (_cpu == CGB_TYPE) {
+    cpu_fast();
+  }
+#endif
+
+  // Init LCD
   LCDC_REG = 0x67;
 
+  // Set interupt handlers
+  add_VBL(vbl_update);
+  add_TIM(MusicUpdate);
+  add_LCD(lcd_update);
 
+// @todo - Check why this doesn't work
+// #ifdef CGB 
+//   TMA_REG = _cpu == CGB_TYPE ? 120U : 0xBCU;
+// #else
+//   TMA_REG = 0xBCU;
+// #endif
+//   TAC_REG = 0x04U;
 
+  LYC_REG = 0x0;  // LCD interupt pos
 
+  set_interrupts(VBL_IFLAG | TIM_IFLAG | LCD_IFLAG);
+  enable_interrupts();
 
+  STAT_REG = 0x45;
 
+  // Set palettes
+  BGP_REG = OBP0_REG = 0xE4U;
+  OBP1_REG = 0xD2U;
 
+  SCX_REG = 0;
+  SCY_REG = 0;
 
   // Position Window Layer
   WX_REG = 7;
   WY_REG = MAXWNDPOSY + 1U;
 
+  // Initialise Player
+  player.sprite = 0;
+  player.moving = TRUE;
+  player.frame = 0;
+  player.frames_len = 2;
+  map_next_pos.x = start_scene_x;
+  map_next_pos.y = start_scene_y;
+  map_next_dir.x = player.dir.x = start_scene_dir_x;
+  map_next_dir.y = player.dir.y = start_scene_dir_y;
+  map_next_sprite = start_player_sprite;
+  player.enabled = TRUE;
+  player.move_speed = start_player_move_speed;
+  player.anim_speed = start_player_anim_speed;
+  fade_black = start_fade_style;
 
+  state_running = 0;
+  next_state = start_scene_index;
+  game_time = 0;
+  scene_type = 0;
 
-
-  /* Set palettes */
-  BGP_REG = OBP0_REG = OBP1_REG = 0xE4U;
+  UIInit();
+  FadeInit();
+  ScriptRunnerInit();
+  ActorsInit();
 
   /* Initialize the sprite */
   set_sprite_data(0x00, 0x1C, earth_data);
@@ -166,8 +210,8 @@ int core_start() {
 
   // LoadScene(current_state);
 
-  DISPLAY_ON;
-  enable_interrupts();
+  // DISPLAY_ON;
+  // enable_interrupts();
 
 
   while (1) {
@@ -199,11 +243,53 @@ int core_start() {
     /* Game Core Loop End ***********************************/
     }
 
+    // Fade out current scene
+    FadeOut();
+    while (fade_running) {
+      wait_vbl_done();
+      FadeUpdate();
+    }
+    if (!fade_black)
+    {
+      DISPLAY_OFF
+    }
+
     state_running = TRUE;
+    current_state = next_state;
 
+    // Reset scroll target and camera
+    scroll_target = 0;
+    scroll_target = &camera_pos;
+    camera_settings = CAMERA_LOCK_FLAG;
 
+    // Disable timer script
+    timer_script_duration = 0;
+
+    UIInit();
     LoadScene(current_state);
+
+    game_time = 0;
+    old_scroll_x = scroll_x;
+    old_scroll_y = scroll_y;
+
+    // Fade in new scene
+    DISPLAY_ON;
+    FadeIn();
+
+    // Run scene init script
+    ScriptStart(&scene_events_start_ptr);
+    ScriptRestoreCtx(0);
+
+    UpdateCamera();
     RefreshScroll();
+    UpdateActors();
+    UIUpdate();
+
+    // Wait for fade in to complete
+    while (fade_running) {
+      wait_vbl_done();
+      FadeUpdate();
+    }
 
   //   // set_sprite_tile(1, 4);
   //   // set_sprite_tile(2, 6);

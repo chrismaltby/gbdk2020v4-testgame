@@ -13,7 +13,6 @@
 #include "UI.h"
 #include "Input.h"
 #include "data_ptrs.h"
-#include "bank_9.h"
 #include <gb/bgb_emu.h>
 #include <stdio.h>
 
@@ -180,19 +179,6 @@ void LoadScene(UINT16 index) {
 
 
   i++;
-
-  PUSH_BANK(9);
-
-  set_sprite_data(0x1C, 0x1C, earth_data9);
-  set_sprite_prop(2, 0x00);
-  set_sprite_prop(3, 0x00);
-  set_sprite_tile(2, earth_tiles9[0]);
-  set_sprite_tile(3, earth_tiles9[1]);
-  move_sprite(2, 128U, 80U);
-  move_sprite(3, 128U + 8U, 80U);
-
-  POP_BANK;
-
 
   PUSH_BANK(DATA_PTRS_BANK);
   BGB_MESSAGE_FMT(buf, "Load Data Ptr Bank %u",DATA_PTRS_BANK);

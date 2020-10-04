@@ -13,9 +13,12 @@
 #include "UI.h"
 #include "Input.h"
 #include "data_ptrs.h"
+#include <gb/bgb_emu.h>
+#include <stdio.h>
 
 #define MAX_PLAYER_SPRITE_SIZE 24
 
+UBYTE buf[80];
 BankPtr bank_ptr;
 UBYTE image_bank;
 UBYTE image_attr_bank;
@@ -165,6 +168,7 @@ void LoadScene(UINT16 index) {
 
   PUSH_BANK(DATA_PTRS_BANK);
   bank = scene_bank_ptrs[index].bank;
+  BGB_MESSAGE_FMT(buf, "Got Bank %u", bank);
   data_ptr = (scene_bank_ptrs[index].offset + (BankDataPtr(bank)));
 
   collision_bank = collision_bank_ptrs[index].bank;

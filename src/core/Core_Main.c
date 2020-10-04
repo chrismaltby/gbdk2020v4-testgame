@@ -164,40 +164,42 @@ int core_start() {
   tile_sprite();
   place_sprite();
 
+  LoadScene(current_state);
+
   DISPLAY_ON;
   enable_interrupts();
 
 
-  // while (1) {
-  //   while (state_running) {
-  //   /* Game Core Loop Start *********************************/
+  while (1) {
+    while (state_running) {
+    /* Game Core Loop Start *********************************/
 
-  //   if (!vbl_count) {
-  //     wait_vbl_done();
-  //   }
+    if (!vbl_count) {
+      wait_vbl_done();
+    }
     
   //   set_sprite_prop(0, 0x00);
   //   set_sprite_prop(1, 0x00);
   //   set_sprite_tile(0, earth_tiles[0]);
   //   set_sprite_tile(1, earth_tiles[1]);
 
-  //   // delta_time = vbl_count == 1u ? 0u : 1u;
-  //   // vbl_count = 0;
+    delta_time = vbl_count == 1u ? 0u : 1u;
+    vbl_count = 0;
 
-  //   // last_joy = joy;
-  //   // joy = joypad();
-  //   // if ((joy & INPUT_DPAD) != (last_joy & INPUT_DPAD)) {
-  //   //   recent_joy = joy & ~last_joy;
-  //   // }
-
-
-
-  //   // POP_BANK;
-
-  //   /* Game Core Loop End ***********************************/
-  //   }
+    last_joy = joy;
+    joy = joypad();
+    if ((joy & INPUT_DPAD) != (last_joy & INPUT_DPAD)) {
+      recent_joy = joy & ~last_joy;
+    }
 
 
+    move_sprite(0, joy * 16, 16);
+    move_sprite(1, (joy * 16) + 8, 16);    
+
+    /* Game Core Loop End ***********************************/
+    }
+
+  state_running = TRUE;
   //   // LoadScene(current_state);
 
   //   // set_sprite_tile(1, 4);
@@ -212,5 +214,5 @@ int core_start() {
 
   //   set_sprite_data(0x00, 0x1C, earth_data);
 
-  // }
+  }
 }

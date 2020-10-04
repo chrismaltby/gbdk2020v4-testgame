@@ -163,6 +163,7 @@ void LoadScene(UINT16 index) {
   UBYTE bank, i, k;
   UBYTE* data_ptr;
 
+
   PUSH_BANK(DATA_PTRS_BANK);
   bank = scene_bank_ptrs[index].bank;
   data_ptr = (scene_bank_ptrs[index].offset + (BankDataPtr(bank)));
@@ -182,12 +183,15 @@ void LoadScene(UINT16 index) {
   LoadSpritePalette((*(data_ptr++) * 256) + *(data_ptr++));
   LoadPlayerSpritePalette(0);
   LoadUIPalette(1);
+
+
+
   UIReset();
   RemoveInputScripts();
 
   ProjectilesInit();
   InitPlayer();
-  
+  /*
   scene_type = (*(data_ptr++)) + 1;
   sprites_len = (*(data_ptr++)) + 1;
   actors_len = (*(data_ptr++)) + 1;
@@ -302,4 +306,5 @@ void LoadScene(UINT16 index) {
   }
 
   POP_BANK;
+  */
 }

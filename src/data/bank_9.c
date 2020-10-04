@@ -1,21 +1,6 @@
-#include "main.h"
+#pragma bank 9
 
-#include "Core_Main.h"
-#include "states/Adventure.h"
-#include "states/Platform.h"
-#include "states/Shmup.h"
-#include "states/TopDown.h"
-#include "states/PointNClick.h"
-#include "DataManager.h"
-#include <gb/bgb_emu.h>
-
-const Void_Func_Void startFuncs[] = {0, Start_TopDown, Start_Platform, Start_Adventure,
-                                     Start_Shmup, Start_PointNClick};
-const Void_Func_Void updateFuncs[] = {0, Update_TopDown, Update_Platform, Update_Adventure,
-                                      Update_Shmup, Update_PointNClick};
-const UBYTE stateBanks[] = {0, 5, 5, 5, 5, 5};
-
-const unsigned char earth_data1[] = {
+const unsigned char earth_data9[] = {
 
     /* Tile 0x00 */
     0x07, 0x07, 0x18, 0x1F, 0x32, 0x2D, 0x71, 0x4E, 0x70, 0x4F, 0xF8, 0x87, 0xF8, 0x87, 0xF8, 0x87,
@@ -53,52 +38,11 @@ const unsigned char earth_data1[] = {
     0xC0, 0xC0, 0x70, 0xB0, 0x68, 0x98, 0xC4, 0x3C, 0xC4, 0x3C, 0xEE, 0x12, 0xF2, 0x0E, 0xE2, 0x1E,
     0xE2, 0x1E, 0xF2, 0x0E, 0x7C, 0x84, 0x7C, 0x84, 0xF8, 0x08, 0xF0, 0x30, 0xC0, 0xC0, 0x00, 0x00};
 
-const unsigned char earth_tiles1[] = {
-    0x00, 0x02,
+const unsigned char earth_tiles9[] = {
+    0x1C, 0x1E,
     0x04, 0x06,
     0x08, 0x0A,
     0x0C, 0x0E,
     0x10, 0x12,
     0x14, 0x16,
     0x18, 0x1A};
-
-int main()
-{
-    UBYTE i = 0;
-
-    disable_interrupts();
-    DISPLAY_OFF;
-    LCDC_REG = 0x67;
-
-    /* Set palettes */
-    BGP_REG = OBP0_REG = OBP1_REG = 0xE4U;
-
-    set_sprite_data(0x00, 0x1C, earth_data1);
-    set_sprite_prop(0, 0x00);
-    set_sprite_prop(1, 0x00);
-    set_sprite_tile(0, earth_tiles1[0]);
-    set_sprite_tile(1, earth_tiles1[1]);
-    move_sprite(0, 64, 64);
-    move_sprite(1, 64 + 8, 64);
-
-    LoadScene(0);
-
-
-    DISPLAY_ON;
-    enable_interrupts();
-
-    // core_start();
-
-    while (1)
-    {
-        wait_vbl_done();
-
-        i++;
-        move_sprite(0, i, 64);
-        move_sprite(1, i + 8, 64);
-    }
-
-    return i;
-
-    // return 0;
-}

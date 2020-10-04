@@ -13,6 +13,7 @@
 #include "UI.h"
 #include "Input.h"
 #include "data_ptrs.h"
+#include "bank_9.h"
 
 #define MAX_PLAYER_SPRITE_SIZE 24
 
@@ -163,6 +164,21 @@ void LoadScene(UINT16 index) {
   UBYTE bank, i, k;
   UBYTE* data_ptr;
 
+  i++;
+
+  PUSH_BANK(9);
+
+  set_sprite_data(0x1C, 0x1C, earth_data9);
+  set_sprite_prop(2, 0x00);
+  set_sprite_prop(3, 0x00);
+  set_sprite_tile(2, earth_tiles9[0]);
+  set_sprite_tile(3, earth_tiles9[1]);
+  move_sprite(2, 128U, 80U);
+  move_sprite(3, 128U + 8U, 80U);
+
+  POP_BANK;
+
+/*
 
   PUSH_BANK(DATA_PTRS_BANK);
   bank = scene_bank_ptrs[index].bank;
@@ -185,12 +201,11 @@ void LoadScene(UINT16 index) {
   LoadUIPalette(1);
 
 
-
-  UIReset();
+  // UIReset();
   RemoveInputScripts();
 
-  ProjectilesInit();
-  InitPlayer();
+  // ProjectilesInit();
+  // InitPlayer();
 
   scene_type = (*(data_ptr++)) + 1;
   sprites_len = (*(data_ptr++)) + 1;
@@ -249,29 +264,32 @@ void LoadScene(UINT16 index) {
 
     actors[i].collisionsEnabled = !actors[i].pinned;
 
-    actors[i].events_ptr.bank = *(data_ptr++);
+  tmp = *(data_ptr++);
+  tmp = *(data_ptr++);
+
+    // actors[i].events_ptr.bank = *(data_ptr++);
     // actors[i].events_ptr.bank = *(data_ptr++);
 
-    // tmp = *(data_ptr++);
+    // // tmp = *(data_ptr++);
     // actors[i].events_ptr.offset = tmp + (*(data_ptr++) * 256);
-/*    
-    actors[i].movement_ptr.bank = *(data_ptr++);
-    actors[i].movement_ptr.offset = *(data_ptr++) + (*(data_ptr++) * 256);
 
-    actors[i].hit_1_ptr.bank = *(data_ptr++);
-    actors[i].hit_1_ptr.offset = *(data_ptr++) + (*(data_ptr++) * 256);
+    // actors[i].movement_ptr.bank = *(data_ptr++);
+    // actors[i].movement_ptr.offset = *(data_ptr++) + (*(data_ptr++) * 256);
 
-    actors[i].hit_2_ptr.bank = *(data_ptr++);
-    actors[i].hit_2_ptr.offset = *(data_ptr++) + (*(data_ptr++) * 256);
+    // actors[i].hit_1_ptr.bank = *(data_ptr++);
+    // actors[i].hit_1_ptr.offset = *(data_ptr++) + (*(data_ptr++) * 256);
 
-    actors[i].hit_3_ptr.bank = *(data_ptr++);
-    actors[i].hit_3_ptr.offset = *(data_ptr++) + (*(data_ptr++) * 256);
+    // actors[i].hit_2_ptr.bank = *(data_ptr++);
+    // actors[i].hit_2_ptr.offset = *(data_ptr++) + (*(data_ptr++) * 256);
 
-    actors[i].movement_ctx = 0;
-    actors[i].script_control = FALSE;
-    */
+    // actors[i].hit_3_ptr.bank = *(data_ptr++);
+    // actors[i].hit_3_ptr.offset = *(data_ptr++) + (*(data_ptr++) * 256);
+
+    // actors[i].movement_ctx = 0;
+    // actors[i].script_control = FALSE;
+
   }
-  /*
+
   actors_active[0] = 0;
   actors_active_size = 1;
 

@@ -63,13 +63,12 @@ void LoadImage(UINT16 index) {
 }
 
 void LoadScene(UINT16 index) {
-  // static UBYTE bank;
-  UBYTE bank;
+  static UBYTE bank;
+  // UBYTE bank;
   UBYTE* data_ptr;
 
   PUSH_BANK(DATA_PTRS_BANK);
   bank = scene_bank_ptrs[index].bank;
-  // actors_len = bank;
   data_ptr = (scene_bank_ptrs[index].offset + (BankDataPtr(bank)));
   collision_bank = collision_bank_ptrs[index].bank;
   POP_BANK;

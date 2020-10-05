@@ -49,8 +49,8 @@ void LoadImage(UINT16 index) {
 }
 
 void LoadScene(UINT16 index) {
-  static UBYTE bank;
-  // UBYTE bank;
+  // static UBYTE bank;
+  UBYTE bank;
   UBYTE* data_ptr;
 
   PUSH_BANK(DATA_PTRS_BANK);

@@ -168,11 +168,6 @@ void ScriptTimerUpdate_b() {
 
       // Reset the countdown timer
       timer_script_time = timer_script_duration;
-    } else {
-      // Timer tick every 16 frames
-      if ((game_time & 0x0F) == 0x00) {
-        --timer_script_time;
-      }
     }
   }
 }
@@ -224,18 +219,6 @@ UBYTE ScriptUpdate_MoveActor() {
   (*tmp_actor).dir.x = new_dir_x;
   (*tmp_actor).dir.y = new_dir_y;
 
-  // Move actor
-  if ((*tmp_actor).move_speed == 0) {
-    // Half speed only move every other frame
-    if (IS_FRAME_2) {
-      (*tmp_actor).pos.x += (WORD)new_dir_x;
-      (*tmp_actor).pos.y += (WORD)new_dir_y;
-    }
-  } else {
-    (*tmp_actor).pos.x += (WORD)(new_dir_x * (*tmp_actor).move_speed);
-    (*tmp_actor).pos.y += (WORD)(new_dir_y * (*tmp_actor).move_speed);        
-  }
-
   return FALSE;
 }
 
@@ -284,18 +267,6 @@ UBYTE ScriptUpdate_MoveActorDiag() {
 
   (*tmp_actor).dir.x = new_dir_x;
   (*tmp_actor).dir.y = new_dir_y;
-
-  // Move actor
-  if ((*tmp_actor).move_speed == 0) {
-    // Half speed only move every other frame
-    if (IS_FRAME_2) {
-      (*tmp_actor).pos.x += (WORD)new_dir_x;
-      (*tmp_actor).pos.y += (WORD)new_dir_y;
-    }
-  } else {
-    (*tmp_actor).pos.x += (WORD)(new_dir_x * (*tmp_actor).move_speed);
-    (*tmp_actor).pos.y += (WORD)(new_dir_y * (*tmp_actor).move_speed);        
-  }
 
   return FALSE;
 }
@@ -350,18 +321,6 @@ UBYTE ScriptUpdate_Emote() {
 }
 
 UBYTE ScriptUpdate_MoveCamera() {
-  if ((game_time & camera_speed) == 0) {
-    if (camera_pos.x > camera_dest.x) {
-      camera_pos.x--;
-    } else if (camera_pos.x < camera_dest.x) {
-      camera_pos.x++;
-    }
-    if (camera_pos.y > camera_dest.y) {
-      camera_pos.y--;
-    } else if (camera_pos.y < camera_dest.y) {
-      camera_pos.y++;
-    }
-  }
   if ((camera_pos.x == camera_dest.x) && (camera_pos.y == camera_dest.y)) {
     if (after_lock_camera) {
       camera_settings = camera_settings | CAMERA_LOCK_FLAG;
@@ -700,7 +659,6 @@ void Script_LoadScene_b() {
   map_next_dir.x = script_cmd_args[4] == 2 ? -1 : script_cmd_args[4] == 4 ? 1 : 0;
   map_next_dir.y = script_cmd_args[4] == 8 ? -1 : script_cmd_args[4] == 1 ? 1 : 0;
 
-  SetScene(scene_next_index);
   FadeSetSpeed(script_cmd_args[5]);
 
   active_script_ctx.script_update_fn = ScriptUpdate_AwaitFade;
@@ -1276,9 +1234,6 @@ void Script_SaveData_b() {
   RAMPtr = (UBYTE*)RAM_START_PTR;
   RAMPtr[0] = TRUE;  // Flag to determine if data has been stored
 
-  RAMPtr[1] = current_state >> 8;
-  RAMPtr[2] = current_state & 0xFF;
-
   // Save player position
   RAMPtr[3] = (player.pos.x >> 3) & 0xFF;
   RAMPtr[4] = (player.pos.y >> 3) & 0xFF;
@@ -1344,7 +1299,6 @@ void Script_LoadData_b() {
     }
 
     // Switch to next scene
-    SetScene(scene_next_index);
     FadeSetSpeed(2);
 
     active_script_ctx.script_update_fn = ScriptUpdate_AwaitFade;
@@ -1914,7 +1868,6 @@ void Script_StackPop_b() {
  */
 void Script_ScenePushState_b() {
   if (scene_stack_ptr < MAX_SCENE_STATES) {
-    scene_stack[scene_stack_ptr].scene_index = current_state;
     scene_stack[scene_stack_ptr].player_dir.x = actors[0].dir.x;
     scene_stack[scene_stack_ptr].player_dir.y = actors[0].dir.y;
     scene_stack[scene_stack_ptr].player_pos.x = 0;  // @wtf-but-needed
@@ -1947,7 +1900,6 @@ void Script_ScenePopState_b() {
     map_next_dir.x = scene_stack[scene_stack_ptr].player_dir.x;
     map_next_dir.y = scene_stack[scene_stack_ptr].player_dir.y;
 
-    SetScene(scene_next_index);
     FadeSetSpeed(script_cmd_args[0]);
     active_script_ctx.script_update_fn = ScriptUpdate_AwaitFade;
 
@@ -1984,7 +1936,6 @@ void Script_ScenePopAllState_b() {
     map_next_dir.x = scene_stack[scene_stack_ptr].player_dir.x;
     map_next_dir.y = scene_stack[scene_stack_ptr].player_dir.y;
 
-    SetScene(scene_next_index);
     FadeSetSpeed(script_cmd_args[0]);
     active_script_ctx.script_update_fn = ScriptUpdate_AwaitFade;
 

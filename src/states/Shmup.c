@@ -96,30 +96,6 @@ void Update_Shmup() {
       }
     }
 
-    // Move player - Horizontal Scenes
-    if (shooter_reached_end) {
-      // Reached end of scene only move vertically
-      if (player.move_speed == 0) {
-        // Half speed only move every other frame
-        if (IS_FRAME_2) {
-          player.pos.y += (WORD)player.dir.y;
-        }
-      } else {
-        player.pos.y += (WORD)(player.dir.y * player.move_speed);
-      }
-    } else {
-      if (player.move_speed == 0) {
-        // Half speed only move every other frame
-        if (IS_FRAME_2) {
-          player.pos.x += (WORD)shooter_direction;
-          player.pos.y += (WORD)player.dir.y;
-        }
-      } else {
-        player.pos.x += (WORD)(shooter_direction * player.move_speed);
-        player.pos.y += (WORD)(player.dir.y * player.move_speed);
-      }
-    }
-
   } else {
     // Check input to set player movement
     if (INPUT_RECENT_LEFT && (player.pos.x > 0) && !(TileAt(tile_x, tile_y) & COLLISION_RIGHT)) {
@@ -148,30 +124,6 @@ void Update_Shmup() {
       // Bottom to top
       if (Lt16(player.pos.y, SCREEN_WIDTH_HALF + 40)) {
         shooter_reached_end = TRUE;
-      }
-    }
-
-    // Move player - Vertical Scenes
-    if (shooter_reached_end) {
-      // Reached end of scene only move horizontally
-      if (player.move_speed == 0) {
-        // Half speed only move every other frame
-        if (IS_FRAME_2) {
-          player.pos.x += (WORD)player.dir.x;
-        }
-      } else {
-        player.pos.x += (WORD)(player.dir.x * player.move_speed);
-      }
-    } else {
-      if (player.move_speed == 0) {
-        // Half speed only move every other frame
-        if (IS_FRAME_2) {
-          player.pos.x += (WORD)player.dir.x;
-          player.pos.y += (WORD)shooter_direction;
-        }
-      } else {
-        player.pos.x += (WORD)(player.dir.x * player.move_speed);
-        player.pos.y += (WORD)(shooter_direction * player.move_speed);
       }
     }
   }

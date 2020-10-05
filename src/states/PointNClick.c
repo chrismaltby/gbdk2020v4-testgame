@@ -82,17 +82,4 @@ void Update_PointNClick() {
     }
   }
 
-  // Move player
-  if (player.moving) {
-    if (player.move_speed == 0) {
-      // Half speed only move every other frame
-      if (IS_FRAME_2) {
-        player.pos.x += (WORD)player.dir.x;
-        player.pos.y += (WORD)player.dir.y;
-      }
-    } else {
-      player.pos.x += (WORD)(player.dir.x * player.move_speed);
-      player.pos.y += (WORD)(player.dir.y * player.move_speed);
-    }
-  }
 }

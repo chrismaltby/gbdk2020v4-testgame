@@ -137,13 +137,6 @@ void UIReset_b() {
 void UIUpdate_b() {
   UBYTE interval;
 
-  if (win_speed == 5 && ((game_time & 0x7) != 0)) {
-    return;
-  } else if (win_speed == 4 && ((game_time & 0x3) != 0)) {
-    return;
-  } else if (win_speed == 3 && ((game_time & 0x1) != 0)) {
-    return;
-  }
 
   if (win_speed == 1) {
     interval = 2;
@@ -165,12 +158,8 @@ void UIUpdate_b() {
     } else {
       win_pos_y -= interval;
     }
-  } else if(!text_drawn) {
-    if ( (joy & text_ff_joypad) | ((game_time & current_text_speed) == 0) ) {
-      UIDrawTextBufferChar_b();
-    }
   }
-
+  
   WX_REG = win_pos_x + 7;
   WY_REG = win_pos_y;
 }

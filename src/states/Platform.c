@@ -67,8 +67,6 @@ void Start_Platform() {
   camera_offset.y = 0;
   camera_deadzone.x = PLATFORM_CAMERA_DEADZONE_X;
   camera_deadzone.y = PLATFORM_CAMERA_DEADZONE_Y;
-
-  game_time = 0;
 }
 
 void Update_Platform() {

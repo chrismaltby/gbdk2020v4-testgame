@@ -210,32 +210,9 @@ void UpdateProjectiles_b() {
       move_sprite(k, screen_x, screen_y);
       move_sprite(k + 1, screen_x + 8, screen_y);
 
-      // Check if actor is off screen
-      if (IS_FRAME_4) {
-        if (((UINT16)(screen_x + 32u) >= SCREENWIDTH_PLUS_64) ||
-            ((UINT16)(screen_y + 32u) >= SCREENHEIGHT_PLUS_64)) {
-          // Mark off screen projectile for removal
-          projectiles[i].life_time = 0;
-        } else {
-          projectiles[i].life_time--;
-        }
-      }
+
 
       if (projectiles[i].pin_actor == NO_ACTOR_PINNED) {
-        // If launched projectile continue movement in current direction
-        if (projectiles[i].moving) {
-          if (projectiles[i].move_speed == 0) {
-            // Half speed only move every other frame
-            if (IS_FRAME_2) {
-              projectiles[i].pos.x += projectiles[i].dir.x;
-              projectiles[i].pos.y += projectiles[i].dir.y;
-            }
-          } else {
-            projectiles[i].pos.x += projectiles[i].dir.x * projectiles[i].move_speed;
-            projectiles[i].pos.y += projectiles[i].dir.y * projectiles[i].move_speed;
-          }
-        }
-      } else {
         // If pinned projectile reposition based on parent actor pos/dir
         if ((actors[projectiles[i].pin_actor].dir.x != projectiles[i].dir.x) ||
             (actors[projectiles[i].pin_actor].dir.y != projectiles[i].dir.y)) {

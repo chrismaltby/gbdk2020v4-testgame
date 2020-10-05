@@ -246,7 +246,6 @@ void RenderScreen() {
   }
   POP_BANK;
 
-  game_time = 0;
 
   DISPLAY_ON;
   if (!fade_timer == 0) {

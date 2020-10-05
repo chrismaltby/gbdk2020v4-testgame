@@ -1,6 +1,5 @@
 #include "Scroll.h"
 
-#include "Actor.h"
 #include "BankManager.h"
 #include "Core_Main.h"
 #include "DataManager.h"
@@ -82,16 +81,6 @@ void ScrollUpdateRowWithDelay(INT16 x, INT16 y) {
   pending_w_i = SCREEN_TILE_REFRES_W;
   pending_w_map = image_ptr + image_tile_width * y + x;
 
-  // Activate Actors in Row
-  for (i = 1; i != actors_len; i++) {
-    if (actors[i].pos.y >> 3 == y) {
-      INT16 tx = actors[i].pos.x >> 3;
-      if (U_LESS_THAN(x, tx) && U_LESS_THAN(tx, x + SCREEN_TILE_REFRES_W)) {
-        ActivateActor(i);
-      }
-    }
-  }
-
 #ifdef CGB
   pending_w_cmap = image_attr_ptr + image_tile_width * y + x;
 #endif
@@ -122,16 +111,6 @@ void ScrollUpdateRow(INT16 x, INT16 y) {
     POP_BANK;
 #endif
     SetTile(id, *(map++));
-  }
-
-  // Activate Actors in Row
-  for (i = 1; i != actors_len; i++) {
-    if (actors[i].pos.y >> 3 == y) {
-      INT16 tx = actors[i].pos.x >> 3;
-      if (U_LESS_THAN(x, tx + 1) && U_LESS_THAN(tx, x + 24)) {
-        ActivateActor(i);
-      }
-    }
   }
 
   POP_BANK;
@@ -184,16 +163,6 @@ void ScrollUpdateColumnWithDelay(INT16 x, INT16 y) {
     // If previous column wasn't fully rendered
     // render it now before starting next column
     ScrollUpdateColumnR();
-  }
-
-  // Activate Actors in Column
-  for (i = 1; i != actors_len; i++) {
-    if (actors[i].pos.x >> 3 == x) {
-      INT16 ty = actors[i].pos.y >> 3;
-      if (U_LESS_THAN(y, ty) && U_LESS_THAN(ty, y + SCREEN_TILE_REFRES_H)) {
-        ActivateActor(i);
-      }
-    }
   }
 
   pending_h_x = x;

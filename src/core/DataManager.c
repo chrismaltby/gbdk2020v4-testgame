@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "BankManager.h"
-#include "Scroll.h"
 #include "data_ptrs.h"
 
 #define MAX_PLAYER_SPRITE_SIZE 24
@@ -50,8 +49,8 @@ void LoadImage(UINT16 index) {
 }
 
 void LoadScene(UINT16 index) {
-  // static UBYTE bank;
-  UBYTE bank;
+  static UBYTE bank;
+  // UBYTE bank;
   UBYTE* data_ptr;
 
   PUSH_BANK(DATA_PTRS_BANK);

@@ -1,7 +1,7 @@
 #ifndef DATA_PTRS_H
 #define DATA_PTRS_H
 
-#include "BankData.h"
+#include "DataManager.h"
 #define DATA_PTRS_BANK 5
 #define FONT_BANK 6
 #define FONT_BANK_OFFSET 0

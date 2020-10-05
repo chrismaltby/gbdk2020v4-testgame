@@ -256,7 +256,6 @@ UBYTE ActorOverlapsPlayer_b(UBYTE inc_noclip) {
 void InitPlayer_b() {
   UBYTE sprite_frames;
 
-  sprite_frames = DIV_4(LoadSprite(map_next_sprite, 0));
   player.enabled = TRUE;
   player.moving = FALSE;
   player.palette_index = PLAYER_PALETTE;

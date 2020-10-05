@@ -1091,7 +1091,6 @@ void Script_PlayerBounce_b() {
  * Change sprite used by player
  */
 void Script_ActorSetSprite_b() {
-  UBYTE sprite_frames;
 
   if (active_script_ctx.script_actor == 0) {
     // Don't allow ActorSetSprite to be used for the player
@@ -1099,15 +1098,6 @@ void Script_ActorSetSprite_b() {
     // handle this automatically
     return;
   }
-
-  sprite_frames = script_cmd_args[1];
-
-  actors[active_script_ctx.script_actor].sprite = script_cmd_args[0];
-  actors[active_script_ctx.script_actor].frame = 0;
-  actors[active_script_ctx.script_actor].sprite_type = sprite_frames == 6
-                                         ? SPRITE_ACTOR_ANIMATED
-                                         : sprite_frames == 3 ? SPRITE_ACTOR : SPRITE_STATIC;
-  actors[active_script_ctx.script_actor].frames_len = sprite_frames == 6 ? 2 : sprite_frames == 3 ? 1 : sprite_frames;
   actors[active_script_ctx.script_actor].rerender = TRUE;
 }
 
@@ -1118,30 +1108,13 @@ void Script_ActorSetSprite_b() {
  */
 void Script_PlayerSetSprite_b() {
   UWORD sprite_index;
-  UBYTE sprite_frames;
 
   // Load Player Sprite
   sprite_index = (script_cmd_args[0] * 256) + script_cmd_args[1];
 
-  sprite_frames = DIV_4(LoadSprite(sprite_index, 0));
 
   player.sprite = 0;
   player.frame = 0;
-
- if (sprite_frames > 6) {
-    // Limit player to 6 frames to prevent overflow into scene actor vram
-    player.sprite_type = SPRITE_STATIC;
-    player.frames_len = 6;
-  } else if (sprite_frames == 6) {
-    player.sprite_type = SPRITE_ACTOR_ANIMATED;
-    player.frames_len = 2;
-  } else if (sprite_frames == 3) {
-    player.sprite_type = SPRITE_ACTOR;
-    player.frames_len = 1;    
-  } else {
-    player.sprite_type = SPRITE_STATIC;
-    player.frames_len = sprite_frames;    
-  }
 
   player.rerender = TRUE;
 
@@ -2202,17 +2175,14 @@ void Script_WeaponAttack_b() {
 }
 
 void Script_PalSetBackground_b() {
-  LoadPalette((script_cmd_args[0] * 256) + script_cmd_args[1]);
   ApplyPaletteChange();
 }
 
 void Script_PalSetSprite_b() {
-  LoadSpritePalette((script_cmd_args[0] * 256) + script_cmd_args[1]);
   ApplyPaletteChange();  
 }
 
 void Script_PalSetUI_b() {
-  LoadUIPalette((script_cmd_args[0] * 256) + script_cmd_args[1]);
   ApplyPaletteChange();
 }
 

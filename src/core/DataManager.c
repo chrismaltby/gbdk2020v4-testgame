@@ -10,19 +10,10 @@
 
 BankPtr bank_ptr;
 UBYTE image_bank;
-UBYTE image_attr_bank;
 UBYTE collision_bank;
 unsigned char* image_ptr;
-unsigned char* image_attr_ptr;
-unsigned char* collision_ptr;
 UBYTE image_tile_width;
 UBYTE image_tile_height;
-UINT16 image_width;
-UINT16 image_height;
-UBYTE sprites_len;
-UBYTE actors_len;
-UBYTE scene_type;
-BankPtr scene_events_start_ptr;
 
 void LoadTiles(UINT16 index) {
   UBYTE bank, size;
@@ -53,16 +44,14 @@ void LoadImage(UINT16 index) {
 
   image_tile_width = *(data_ptr++);
   image_tile_height = *(data_ptr++);
-  image_width = image_tile_width * 8;
-  image_height = image_tile_height * 8;
   image_ptr = data_ptr;
 
   POP_BANK;
 }
 
 void LoadScene(UINT16 index) {
-  // static UBYTE bank;
-  UBYTE bank;
+  static UBYTE bank;
+  // UBYTE bank;
   UBYTE* data_ptr;
 
   PUSH_BANK(DATA_PTRS_BANK);

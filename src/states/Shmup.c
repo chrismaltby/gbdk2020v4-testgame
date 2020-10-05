@@ -17,39 +17,6 @@ BYTE shooter_direction = 0;
 UBYTE shooter_reached_end = 0;
 
 void Start_Shmup() {
-  camera_offset.x = 0;
-  camera_offset.y = 0;
-  camera_deadzone.x = 0;
-  camera_deadzone.y = 0;
-
-  if (player.dir.x < 0) {
-    // Right to left scrolling
-    camera_offset.x = 56;
-    shooter_horizontal = 1;
-    shooter_direction = -1;
-    // Set dir x to face right so sprite doesn't flip
-    // Up to you to provide left facing ship sprite
-    player.dir.x = 1;
-  } else if (player.dir.x > 0) {
-    // Left to right scrolling
-    camera_offset.x = -56;
-    shooter_horizontal = 1;
-    shooter_direction = 1;
-  } else if (player.dir.y < 0) {
-    // Bottom to top scrolling
-    camera_offset.y = 56;
-    shooter_horizontal = 0;
-    shooter_direction = -1;
-  } else {
-    // Top to bottom scrolling
-    camera_offset.y = -40;
-    shooter_horizontal = 0;
-    shooter_direction = 1;
-  }
-
-  shooter_reached_end = FALSE;
-
-  player.animate = TRUE;
 }
 
 void Update_Shmup() {

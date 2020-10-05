@@ -14,11 +14,6 @@
 #define ADVENTURE_CAMERA_DEADZONE 8
 
 void Start_Adventure() {
-  // Set camera to follow player
-  camera_offset.x = 0;
-  camera_offset.y = 0;
-  camera_deadzone.x = ADVENTURE_CAMERA_DEADZONE;
-  camera_deadzone.y = ADVENTURE_CAMERA_DEADZONE;
 }
 
 void Update_Adventure() {

@@ -15,7 +15,6 @@
 #include "Input.h"
 #include "Sprite.h"
 #include "Scroll.h"
-#include "Camera.h"
 #include "data_ptrs.h"
 #include "Projectiles.h"
 #include "states/Platform.h"
@@ -321,13 +320,6 @@ UBYTE ScriptUpdate_Emote() {
 }
 
 UBYTE ScriptUpdate_MoveCamera() {
-  if ((camera_pos.x == camera_dest.x) && (camera_pos.y == camera_dest.y)) {
-    if (after_lock_camera) {
-      camera_settings = camera_settings | CAMERA_LOCK_FLAG;
-    }
-    return TRUE;
-  }
-
   return FALSE;
 }
 
@@ -518,21 +510,6 @@ void Script_ActorActivate_b() {
  *   arg2: Camera settings
  */
 void Script_CameraMoveTo_b() {
-  camera_dest.x = (script_cmd_args[0] * 8) + SCREEN_WIDTH_HALF;
-  camera_dest.y = (script_cmd_args[1] * 8) + SCREEN_HEIGHT_HALF;
-
-  camera_settings = (UBYTE)script_cmd_args[2] & ~CAMERA_LOCK_FLAG;
-  camera_speed = (UBYTE)script_cmd_args[2] & CAMERA_SPEED_MASK;
-
-  ScriptHelper_ClampCamDest();
-
-  if ((camera_settings & CAMERA_TRANSITION_FLAG) == CAMERA_TRANSITION_FLAG) {
-    after_lock_camera = FALSE;
-    active_script_ctx.script_update_fn = ScriptUpdate_MoveCamera;
-  } else {
-    camera_pos.x = camera_dest.x;
-    camera_pos.y = camera_dest.y;
-  }
 }
 
 /*
@@ -543,49 +520,10 @@ void Script_CameraMoveTo_b() {
  *   arg0: Camera settings
  */
 void Script_CameraLock_b() {
-  camera_settings = script_cmd_args[0] & ~CAMERA_LOCK_FLAG;
-  camera_speed = (UBYTE)script_cmd_args[0] & CAMERA_SPEED_MASK;
-  camera_dest.x = player.pos.x;
-  camera_dest.y = player.pos.y;
-
   ScriptHelper_ClampCamDest();
-
-  if ((camera_settings & CAMERA_TRANSITION_FLAG) == CAMERA_TRANSITION_FLAG) {
-    after_lock_camera = TRUE;
-    active_script_ctx.script_update_fn = ScriptUpdate_MoveCamera;
-  } else {
-    camera_pos.x = camera_dest.x;
-    camera_pos.y = camera_dest.y;
-    camera_settings = camera_settings | CAMERA_LOCK_FLAG;
-  }
 }
 
 void ScriptHelper_ClampCamDest() {
-  // Clamp Camera Current X
-  if (U_LESS_THAN(image_width - SCREEN_WIDTH_HALF, camera_pos.x)) {
-    camera_pos.x = image_width - SCREEN_WIDTH_HALF;
-  } else if (U_LESS_THAN(camera_pos.x, SCREEN_WIDTH_HALF)) {
-    camera_pos.x = SCREEN_WIDTH_HALF;
-  }
-
-  // Clamp Camera Current Y
-  if (U_LESS_THAN(image_height - SCREEN_HEIGHT_HALF, camera_pos.y)) {
-    camera_pos.y = image_height - SCREEN_HEIGHT_HALF;
-  } else if (U_LESS_THAN(camera_pos.y, SCREEN_HEIGHT_HALF)) {
-    camera_pos.y = SCREEN_HEIGHT_HALF;
-  }
-
-  // Clamp Camera Destination
-  if (Gt16(camera_dest.x, image_width - SCREEN_WIDTH_HALF)) {
-    camera_dest.x = image_width - SCREEN_WIDTH_HALF;
-  } else if (Lt16(camera_dest.x, SCREEN_WIDTH_HALF)) {
-    camera_dest.x = SCREEN_WIDTH_HALF;
-  }
-  if (Gt16(camera_dest.y, image_height - SCREEN_HEIGHT_HALF)) {
-    camera_dest.y = image_height - SCREEN_HEIGHT_HALF;
-  } else if (Lt16(camera_dest.y, SCREEN_HEIGHT_HALF)) {
-    camera_dest.y = SCREEN_HEIGHT_HALF;
-  }
 }
 
 /*

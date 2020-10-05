@@ -2,16 +2,8 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "Actor.h"
 #include "BankManager.h"
-#include "Palette.h"
-#include "Projectiles.h"
-#include "ScriptRunner.h"
 #include "Scroll.h"
-#include "Sprite.h"
-#include "Trigger.h"
-#include "UI.h"
-#include "Input.h"
 #include "data_ptrs.h"
 
 #define MAX_PLAYER_SPRITE_SIZE 24
@@ -71,7 +63,7 @@ void LoadImage(UINT16 index) {
 }
 
 void LoadScene(UINT16 index) {
-  UBYTE bank, i, k;
+  UBYTE bank;
   UBYTE* data_ptr;
 
   PUSH_BANK(DATA_PTRS_BANK);

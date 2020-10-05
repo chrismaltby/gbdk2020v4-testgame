@@ -10,10 +10,6 @@
 #include "Trigger.h"
 
 void Start_TopDown() {
-  camera_offset.x = 0;
-  camera_offset.y = 0;
-  camera_deadzone.x = 0;
-  camera_deadzone.y = 0;
 }
 
 void Update_TopDown() {

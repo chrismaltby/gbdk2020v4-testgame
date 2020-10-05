@@ -63,10 +63,6 @@ void Start_Platform() {
     player.dir.y = -1;
   }
 
-  camera_offset.x = 0;
-  camera_offset.y = 0;
-  camera_deadzone.x = PLATFORM_CAMERA_DEADZONE_X;
-  camera_deadzone.y = PLATFORM_CAMERA_DEADZONE_Y;
 }
 
 void Update_Platform() {

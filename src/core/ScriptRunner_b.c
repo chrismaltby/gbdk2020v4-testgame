@@ -187,11 +187,11 @@ UBYTE ScriptUpdate_AwaitFade() {
 }
 
 UBYTE ScriptUpdate_AwaitUIClosed() {
-  return UIIsClosed();
+  return FALSE;
 }
 
 UBYTE ScriptUpdate_AwaitUIAtDest() {
-  return UIAtDest();
+  return FALSE;
 }
 
 UBYTE ScriptUpdate_AwaitInputPres() {
@@ -274,8 +274,6 @@ void Script_End_b() {
  *   arg1: Low 8 bits for string index
  */
 void Script_Text_b() {
-  UIShowText(script_cmd_args[0], (script_cmd_args[1] * 256) + script_cmd_args[2]);
-  active_script_ctx.script_update_fn = ScriptUpdate_AwaitUIClosed;
 }
 
 /*
@@ -582,8 +580,6 @@ void Script_CameraShake_b() {
  * Load image into window buffer and position.
  */
 void Script_ShowOverlay_b() {
-  UISetColor(script_cmd_args[0]);
-  UISetPos(script_cmd_args[1] << 3, script_cmd_args[2] << 3);
 }
 
 /*
@@ -592,7 +588,6 @@ void Script_ShowOverlay_b() {
  * Hide window buffer
  */
 void Script_HideOverlay_b() {
-  UISetPos(0, MENU_CLOSED_Y);
 }
 
 /*
@@ -601,7 +596,6 @@ void Script_HideOverlay_b() {
  * Window buffer set position to X/Y
  */
 void Script_OverlaySetPos_b() {
-  UISetPos(script_cmd_args[0] << 3, script_cmd_args[1] << 3);
 }
 
 /*
@@ -610,7 +604,6 @@ void Script_OverlaySetPos_b() {
  * Window buffer move position to X/Y with speed
  */
 void Script_OverlayMoveTo_b() {
-  UIMoveTo(script_cmd_args[0] << 3, script_cmd_args[1] << 3, script_cmd_args[2]);
   active_script_ctx.script_update_fn = ScriptUpdate_AwaitUIAtDest;
 }
 
@@ -727,8 +720,6 @@ void Script_IfInput_b() {
  * Display multiple choice input
  */
 void Script_Choice_b() {
-  UIShowChoice((script_cmd_args[0] * 256) + script_cmd_args[1], script_cmd_args[2],
-               (script_cmd_args[3] * 256) + script_cmd_args[4]);
   active_script_ctx.script_update_fn = ScriptUpdate_AwaitUIClosed;
 }
 
@@ -738,9 +729,6 @@ void Script_Choice_b() {
  * Display multiple choice menu
  */
 void Script_TextMenu_b() {
-  UIShowMenu((script_cmd_args[0] * 256) + script_cmd_args[1], script_cmd_args[2],
-             (script_cmd_args[3] * 256) + script_cmd_args[4], script_cmd_args[5],
-             script_cmd_args[6]);
   active_script_ctx.script_update_fn = ScriptUpdate_AwaitUIClosed;
 }
 
@@ -1227,10 +1215,6 @@ void Script_ActorSetAnimSpeed_b() {
  *   arg1: Animation speed to use fading out
  */
 void Script_TextSetAnimSpeed_b() {
-  text_in_speed = script_cmd_args[0];
-  text_out_speed = script_cmd_args[1];
-  text_draw_speed = script_cmd_args[2];
-  text_ff_joypad = script_cmd_args[3] ? (J_A | J_B) : 0;
 }
 
 /*
@@ -1397,24 +1381,7 @@ void Script_ActorSetFlip_b() { /* NOOP - This command has been removed */
  */
 void Script_TextMulti_b() {
   UBYTE mode;
-  mode = script_cmd_args[0];
-
-  
-
-  if (mode == 0) {
-    tmp_text_out_speed = text_out_speed;
-    text_out_speed = 0;
-  } else if (mode == 1) {
-    tmp_text_in_speed = text_in_speed;
-    text_in_speed = 0;
-  } else if (mode == 2) {
-    text_out_speed = tmp_text_out_speed;
-  } else if (mode == 3) {
-    text_in_speed = tmp_text_in_speed;
-    text_out_speed = tmp_text_out_speed;
-  }
-
-  
+  mode = script_cmd_args[0];  
 }
 
 /*
@@ -1513,9 +1480,6 @@ void Script_RemoveTimerScript_b() {
  *   arg2: Spritesheet to use as the dialogue avatar
  */
 void Script_TextWithAvatar_b() {
-  avatar_enabled = TRUE;
-  UIShowText(script_cmd_args[0], (script_cmd_args[1] * 256) + script_cmd_args[2]);
-  UIShowAvatar(script_cmd_args[3]);
   active_script_ctx.script_update_fn = ScriptUpdate_AwaitUIClosed;
 }
 

@@ -54,17 +54,15 @@ void LoadImage(UINT16 index) {
   image_tile_width = *(data_ptr++);
   image_tile_height = *(data_ptr++);
   image_width = image_tile_width * 8;
-  scroll_x_max = image_width - ((UINT16)SCREENWIDTH);
   image_height = image_tile_height * 8;
-  scroll_y_max = image_height - ((UINT16)SCREENHEIGHT);
   image_ptr = data_ptr;
 
   POP_BANK;
 }
 
 void LoadScene(UINT16 index) {
-  static UBYTE bank;
-  // UBYTE bank;
+  // static UBYTE bank;
+  UBYTE bank;
   UBYTE* data_ptr;
 
   PUSH_BANK(DATA_PTRS_BANK);

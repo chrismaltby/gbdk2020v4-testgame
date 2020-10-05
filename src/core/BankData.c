@@ -7,7 +7,6 @@
 
 void SetBankedBkgData(UBYTE bank, UBYTE i, UBYTE l, unsigned char* ptr) {
   PUSH_BANK(bank);
-  WaitForMode0Or1();
   set_bkg_data(i, l, ptr);
   POP_BANK;
 }

@@ -151,22 +151,7 @@ const SCRIPT_CMD script_cmds[] = {
 };
 
 void ScriptTimerUpdate_b() {
-  // Don't update timer while script is running
-  if (active_script_ctx.script_ptr != 0) {
-    return;
-  }
 
-  // Check if timer is enabled
-  if (timer_script_duration != 0) {
-    if (timer_script_time == 0) {
-      last_joy = last_joy & 0xF0;
-
-      ScriptStartBg(&timer_script_ptr, 255);
-
-      // Reset the countdown timer
-      timer_script_time = timer_script_duration;
-    }
-  }
 }
 
 UBYTE ScriptUpdate_MoveActor() {
@@ -195,36 +180,15 @@ UBYTE ScriptUpdate_AwaitUIAtDest() {
 }
 
 UBYTE ScriptUpdate_AwaitInputPres() {
-  return (joy != last_joy && joy & await_input) != 0;
+  return FALSE;
 }
 
 UBYTE ScriptUpdate_Wait() {
-  if (active_script_ctx.wait_time == 0) {
-    return TRUE;
-  }
-  active_script_ctx.wait_time--;
   return FALSE;
 }
 
 UBYTE ScriptUpdate_Emote() {
-  UINT16 screen_x;
-  UINT16 screen_y;
-
-  if (emote_timer == BUBBLE_TOTAL_FRAMES) {
-    move_sprite(0, 0, 0);
-    move_sprite(1, 0, 0);    
-    return TRUE;
-  } else {
-    if (emote_timer < BUBBLE_ANIMATION_FRAMES) {
-      screen_y += emote_offsets[emote_timer];
-    }
-
-    move_sprite(0, screen_x, screen_y - 16u);
-    move_sprite(1, screen_x + 8u, screen_y - 16u);
-
-    emote_timer++;
-    return FALSE;
-  }
+  return FALSE;
 }
 
 UBYTE ScriptUpdate_MoveCamera() {
@@ -232,18 +196,6 @@ UBYTE ScriptUpdate_MoveCamera() {
 }
 
 UBYTE ScriptUpdate_CamShake() {
-  if (shake_time == 0) {
-    scroll_offset_x = 0;
-    return TRUE;
-  }
-
-  shake_time--;
-
-  // Handle Shake
-  if (shake_time != 0) {
-    scroll_offset_x = (INT16)(shake_time & 0x5);
-  }
-
   return FALSE;
 }
 
@@ -261,8 +213,6 @@ void Script_Noop_b() {}
  * Stop current script from running and reset script pointer.
  */
 void Script_End_b() {
-  active_script_ctx.script_ptr_bank = 0;
-  active_script_ctx.script_ptr = 0;
 }
 
 /*
@@ -285,7 +235,6 @@ void Script_Text_b() {
  *   arg1: Low 8 bits for new pointer
  */
 void Script_Goto_b() {
-  active_script_ctx.script_ptr = active_script_ctx.script_start_ptr + (script_cmd_args[0] * 256) + script_cmd_args[1];
 }
 
 /*
@@ -299,10 +248,6 @@ void Script_Goto_b() {
  *   arg3: Low 8 bits for new pointer
  */
 void Script_IfFlag_b() {
-  if (script_variables[(script_cmd_args[0] * 256) +
-                       script_cmd_args[1]]) {  // True path, jump to position specified by ptr
-    active_script_ctx.script_ptr = active_script_ctx.script_start_ptr + (script_cmd_args[2] * 256) + script_cmd_args[3];
-  }
 }
 
 /*
@@ -613,8 +558,6 @@ void Script_OverlayMoveTo_b() {
  * Pause script until joy overlaps bits with provided input
  */
 void Script_AwaitInput_b() {
-  await_input = script_cmd_args[0];
-  active_script_ctx.script_update_fn = ScriptUpdate_AwaitInputPres;
 }
 
 /*
@@ -706,12 +649,6 @@ void Script_SetFlagProperty_b() {
  * Goto true path if joy mask overlaps
  */
 void Script_IfInput_b() {
-  UBYTE mask;
-  mask = 0;
-  mask = script_cmd_args[0];
-  if ((joy & mask) != 0) {  // True path, jump to position specified by ptr
-    active_script_ctx.script_ptr = active_script_ctx.script_start_ptr + (script_cmd_args[1] * 256) + script_cmd_args[2];
-  }
 }
 
 /*
@@ -720,7 +657,6 @@ void Script_IfInput_b() {
  * Display multiple choice input
  */
 void Script_Choice_b() {
-  active_script_ctx.script_update_fn = ScriptUpdate_AwaitUIClosed;
 }
 
 /*
@@ -1307,24 +1243,6 @@ void Script_ScenePopAllState_b() {
  * Attach script to button press
  */
 void Script_SetInputScript_b() {
-  UBYTE input, index;
-
-  input = script_cmd_args[0];
-
-  if (script_cmd_args[1]) {
-    SET_BIT_MASK(input_script_persist, input);
-  } else {
-    UNSET_BIT_MASK(input_script_persist, input);
-  }
-
-  index = 0;
-  while (!(input & 1) && input != 0) {
-    index += 1;
-    input = input >> 1;
-  }
-
-  input_script_ptrs[index].bank = script_cmd_args[2];
-  input_script_ptrs[index].offset = (script_cmd_args[3] * 256) + script_cmd_args[4];
 }
 
 /*
@@ -1333,17 +1251,6 @@ void Script_SetInputScript_b() {
  * Remove script from button press
  */
 void Script_RemoveInputScript_b() {
-  UBYTE input, index;
-
-  input = script_cmd_args[0];
-
-  index = 0;
-  for (index = 0; index != 8; ++index) {
-    if (input & 1) {
-      input_script_ptrs[index].bank = 0;
-    }
-    input = input >> 1;
-  }
 }
 
 /*

@@ -1,7 +1,6 @@
 #pragma bank 4
 
 #include "ScriptRunner.h"
-#include "MusicManager.h"
 #include "BankData.h"
 #include "BankManager.h"
 #include "DataManager.h"
@@ -841,7 +840,6 @@ void Script_AwaitInput_b() {
  * Play the music track with given index
  */
 void Script_MusicPlay_b() {
-  MusicPlay(script_cmd_args[0], script_cmd_args[1], SCRIPT_RUNNER_BANK);
 }
 
 /*
@@ -850,7 +848,6 @@ void Script_MusicPlay_b() {
  * Stop any playing music
  */
 void Script_MusicStop_b() {
-  MusicStop(SCRIPT_RUNNER_BANK);
 }
 
 /*
@@ -1971,7 +1968,6 @@ void Script_VariableClearFlags_b() {
  * ----------------------------
  */
 void Script_SoundPlayTone_b() {
-  SoundPlayTone((script_cmd_args[0] * 256) + script_cmd_args[1], script_cmd_args[2]);
 }
 
 /*
@@ -1979,7 +1975,6 @@ void Script_SoundPlayTone_b() {
  * ----------------------------
  */
 void Script_SoundStopTone_b() {
-  SoundStopTone();
 }
 
 /*
@@ -1987,7 +1982,6 @@ void Script_SoundStopTone_b() {
  * ----------------------------
  */
 void Script_SoundPlayBeep_b() {
-  SoundPlayBeep(script_cmd_args[0]);
 }
 
 /*
@@ -1995,7 +1989,6 @@ void Script_SoundPlayBeep_b() {
  * ----------------------------
  */
 void Script_SoundPlayCrash_b() {
-  SoundPlayCrash();
 }
 
 /*

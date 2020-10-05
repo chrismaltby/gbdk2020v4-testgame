@@ -63,8 +63,8 @@ void LoadImage(UINT16 index) {
 }
 
 void LoadScene(UINT16 index) {
-  static UBYTE bank;
-  // UBYTE bank;
+  // static UBYTE bank;
+  UBYTE bank;
   UBYTE* data_ptr;
 
   PUSH_BANK(DATA_PTRS_BANK);
@@ -76,7 +76,6 @@ void LoadScene(UINT16 index) {
 
   PUSH_BANK(bank);
   LoadImage((*(data_ptr++) * 256) + *(data_ptr++));
-  InitScroll();
 
   POP_BANK;
 }

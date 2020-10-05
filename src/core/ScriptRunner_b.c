@@ -2,7 +2,6 @@
 
 #include "ScriptRunner.h"
 #include "MusicManager.h"
-#include "FadeManager.h"
 #include "BankData.h"
 #include "BankManager.h"
 #include "DataManager.h"
@@ -271,8 +270,7 @@ UBYTE ScriptUpdate_MoveActorDiag() {
 }
 
 UBYTE ScriptUpdate_AwaitFade() {
-  FadeUpdate();
-  return !IsFading();
+  return TRUE;
 }
 
 UBYTE ScriptUpdate_AwaitUIClosed() {
@@ -546,9 +544,6 @@ void Script_Wait_b() {
  *   arg0: Fade speed
  */
 void Script_FadeOut_b() {
-  FadeOut();
-  FadeSetSpeed(script_cmd_args[0]);
-  active_script_ctx.script_update_fn = ScriptUpdate_AwaitFade;
 }
 
 /*
@@ -559,9 +554,6 @@ void Script_FadeOut_b() {
  *   arg0: Fade speed
  */
 void Script_FadeIn_b() {
-  FadeIn();
-  FadeSetSpeed(script_cmd_args[0]);
-  active_script_ctx.script_update_fn = ScriptUpdate_AwaitFade;
 }
 
 /*
@@ -572,7 +564,6 @@ void Script_FadeIn_b() {
  *   arg0: Fade style (0=white, 1=black)
  */
 void Script_FadeSetSettings_b() {
-  fade_black = script_cmd_args[0];
 }
 
 /*
@@ -596,10 +587,6 @@ void Script_LoadScene_b() {
   map_next_pos.y = (script_cmd_args[3] * 8);
   map_next_dir.x = script_cmd_args[4] == 2 ? -1 : script_cmd_args[4] == 4 ? 1 : 0;
   map_next_dir.y = script_cmd_args[4] == 8 ? -1 : script_cmd_args[4] == 1 ? 1 : 0;
-
-  FadeSetSpeed(script_cmd_args[5]);
-
-  active_script_ctx.script_update_fn = ScriptUpdate_AwaitFade;
 }
 
 /*
@@ -1209,10 +1196,6 @@ void Script_LoadData_b() {
       script_variables[i] = RAMPtr[i];
     }
 
-    // Switch to next scene
-    FadeSetSpeed(2);
-
-    active_script_ctx.script_update_fn = ScriptUpdate_AwaitFade;
   }
 
   DISABLE_RAM;
@@ -1811,9 +1794,6 @@ void Script_ScenePopState_b() {
     map_next_dir.x = scene_stack[scene_stack_ptr].player_dir.x;
     map_next_dir.y = scene_stack[scene_stack_ptr].player_dir.y;
 
-    FadeSetSpeed(script_cmd_args[0]);
-    active_script_ctx.script_update_fn = ScriptUpdate_AwaitFade;
-
     return;
   }
 }
@@ -1846,9 +1826,6 @@ void Script_ScenePopAllState_b() {
     map_next_pos.y = scene_stack[scene_stack_ptr].player_pos.y * 8;
     map_next_dir.x = scene_stack[scene_stack_ptr].player_dir.x;
     map_next_dir.y = scene_stack[scene_stack_ptr].player_dir.y;
-
-    FadeSetSpeed(script_cmd_args[0]);
-    active_script_ctx.script_update_fn = ScriptUpdate_AwaitFade;
 
     return;
   }
@@ -2076,15 +2053,12 @@ void Script_WeaponAttack_b() {
 }
 
 void Script_PalSetBackground_b() {
-  ApplyPaletteChange();
 }
 
 void Script_PalSetSprite_b() {
-  ApplyPaletteChange();  
 }
 
 void Script_PalSetUI_b() {
-  ApplyPaletteChange();
 }
 
 void Script_ActorStopUpdate_b() {

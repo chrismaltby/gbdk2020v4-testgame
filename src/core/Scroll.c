@@ -223,18 +223,6 @@ void RenderScreen() {
   UINT8 i, temp;
   INT16 y;
 
-  if (!fade_black)
-  {
-    DISPLAY_OFF
-  } else if (!fade_timer == 0)
-  {
-    // Set palette black if not already, then restore.
-    temp = fade_timer;
-    fade_timer = 0;
-    ApplyPaletteChange();
-    fade_timer = temp;
-  }
-
   // Clear pending rows/ columns
   pending_w_i = 0;
   pending_h_i = 0;
@@ -248,8 +236,5 @@ void RenderScreen() {
 
 
   DISPLAY_ON;
-  if (!fade_timer == 0) {
-    // Screen palate to nornmal if not fading
-    ApplyPaletteChange();
-  }
+
 }

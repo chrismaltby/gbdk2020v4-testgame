@@ -13,6 +13,7 @@ UBYTE collision_bank;
 unsigned char* image_ptr;
 UBYTE image_tile_width;
 UBYTE image_tile_height;
+UBYTE *test;
 
 void LoadTiles(UINT16 index) {
   UBYTE bank, size;
@@ -22,7 +23,7 @@ void LoadTiles(UINT16 index) {
 
   // PUSH_BANK(DATA_PTRS_BANK);
   bank = tileset_bank_ptrs[index].bank;
-  data_ptr = (UBYTE*)(tileset_bank_ptrs[index].offset + (BankDataPtr(bank)));
+  data_ptr = (UBYTE*)(tileset_bank_ptrs[index].offset + 0x4000);
   // POP_BANK;
 
   // PUSH_BANK(bank);
@@ -55,20 +56,26 @@ void LoadImage(UINT16 index) {
   // POP_BANK;
 }
 
-void LoadScene(UINT16 index) {
-  // static UBYTE bank;
-  UBYTE bank;
-  UBYTE* data_ptr;
+// void LoadScene(UINT16 index) {
+//   // static UBYTE bank;
+//   UBYTE bank;
+//   UBYTE* data_ptr;
 
-  PUSH_BANK(DATA_PTRS_BANK);
-  bank = scene_bank_ptrs[index].bank;
-  data_ptr = (scene_bank_ptrs[index].offset + (BankDataPtr(bank)));
-  collision_bank = collision_bank_ptrs[index].bank;
-  POP_BANK;
+//   // PUSH_BANK(DATA_PTRS_BANK);
+//   SWITCH_ROM(5);
 
-  PUSH_BANK(bank);
-  // LoadImage(1);
-  LoadImage((*(data_ptr++) * 256) + *(data_ptr++));
+//   bank = scene_bank_ptrs[index].bank;
+//   data_ptr = (scene_bank_ptrs[index].offset + 0x4000);
+//   collision_bank = collision_bank_ptrs[index].bank;
+//   // POP_BANK;
 
-  POP_BANK;
-}
+//   SWITCH_ROM(bank);
+//   test = data_ptr;
+//   // POP_BANK;
+
+//   // PUSH_BANK(bank);
+//   // // LoadImage(1);
+//   // LoadImage((*(data_ptr++) * 256) + *(data_ptr++));
+
+//   // POP_BANK;
+// }

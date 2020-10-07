@@ -1,42 +1,42 @@
 #include <gb/gb.h>
 #include <stdio.h>
 
-UWORD test1;
-UBYTE test2;
-UBYTE test3;
+unsigned char test1;
+unsigned char test2;
 
 typedef struct _BankPtr
 {
-  UBYTE bank;
-  UWORD offset;
+  unsigned char bank;
+  unsigned int offset;
 } BankPtr;
 
-const BankPtr scene_bank_ptrs[] = {
-    {0x06, 0x3C53}};
+const BankPtr scene_bank_ptrs[] = {{0x06, 0x3C53}};
 
-void TestFn2(UBYTE i)
+void TestFn2(unsigned char i)
 {
   test2 = i;
 }
 
-void TestFn(UINT16 index)
+void TestFn(unsigned int index)
 {
-  // static UBYTE bank;
-  UBYTE bank;
-  UWORD data_ptr;
+  // static unsigned char bank; // Switching bank to be static stops the bug from triggering
+  unsigned char bank;
+  unsigned int data_ptr;
 
   bank = scene_bank_ptrs[index].bank;
   data_ptr = scene_bank_ptrs[index].offset;
 
-  /* This section doesn't matter but bug doesn't trigger without it */
-  test3 = 1;
+  /* This section doesn't matter but the bug doesn't trigger without it */
+  test1 = 1;
   TestFn2(bank);
-  test1 = data_ptr;
   /**/
 
-  if (data_ptr == 0x3C53) {
+  if (data_ptr == 0x3C53)
+  {
     printf("OK\n");
-  } else {
+  }
+  else
+  {
     printf("FAIL\n");
   }
 }

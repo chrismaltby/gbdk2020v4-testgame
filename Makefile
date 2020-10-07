@@ -2,8 +2,7 @@ CC = lcc
 ROM_BUILD_DIR = build
 CART_SIZE = 16
 COLOR =
-DEBUG = 
-RELEASE = 1
+DEBUG = 1
 OBJDIR = obj
 CFLAGS = -Iinclude
 LFLAGS_NBANKS += -Wl-yo$(CART_SIZE) -Wl-ya4
@@ -12,13 +11,11 @@ LFLAGS = -Wl-yt27 $(LFLAGS_NBANKS)
 ifdef RELEASE
 CFLAGS += -Wf'--max-allocs-per-node 50000'
 LFLAGS += -Wf--debug -Wl-m -Wl-w -Wl-y -Wl-j
-# Added this is DEBUG doesn't seem to trigger the bug
-# but without these VSCode/Emulicious Plugin didn't work
-CFLAGS += -Wf--debug -Wl-m -Wl-w -Wl-y
 endif
 
 ifdef DEBUG
-CFLAGS += -Wf--debug -Wf--nolospre -Wf--nogcse -Wl-m -Wl-w -Wl-y
+# CFLAGS += -Wf--debug -Wf--nolospre -Wf--nogcse -Wl-m -Wl-w -Wl-y
+CFLAGS += -Wf--debug -Wf--nogcse -Wl-m -Wl-w -Wl-y
 LFLAGS += -Wf--debug -Wl-m -Wl-w -Wl-y -Wl-j
 endif
 

@@ -19,7 +19,6 @@ void TestFn2(unsigned char i)
 
 void TestFn(unsigned int index)
 {
-  // static unsigned char bank; // Switching bank to be static stops the bug from triggering
   unsigned char bank;
   unsigned int data_ptr;
 

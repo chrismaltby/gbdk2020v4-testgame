@@ -1,13 +1,25 @@
 CC = lcc
 ROM_BUILD_DIR = build/rom
+CART_SIZE = 16
+COLOR = 1
+DEBUG = 1
 OBJDIR = obj
-CFLAGS = -Wa-l -Iinclude
-LFLAGS_NBANKS += -Wl-yo$(CART_SIZE)
-LFLAGS = $(LFLAGS_NBANKS) -Wa-l -Wl-m -Wl-j -Wl-yt27 -Wl-ya4
+CFLAGS = -Iinclude
+LFLAGS_NBANKS += -Wl-yo$(CART_SIZE) -Wl-ya4
+LFLAGS = -Wl-yt27 $(LFLAGS_NBANKS)
+
+ifdef RELEASE
+CFLAGS += -Wf'--max-allocs-per-node 50000'
+endif
+
+ifdef DEBUG
+CFLAGS += -Wf--debug -Wf--nolospre -Wf--nogcse -Wl-m -Wl-w -Wl-y
+LFLAGS += -Wf--debug -Wl-m -Wl-w -Wl-y -Wl-j
+endif
 
 ifdef COLOR
 CFLAGS += -DCGB
-LFLAGS += -Wm-yc
+LFLAGS += -Wm-yC
 endif
 
 ifdef PROFILE
@@ -50,7 +62,7 @@ $(OBJDIR)/%.o:	src/core/%.s
 
 $(ROM_BUILD_DIR)/%.gb:	$(OBJS)
 	mkdir -p $(ROM_BUILD_DIR)
-	$(CC) $(LFLAGS) -Iinclude -o $@ $^	
+	$(CC) $(LFLAGS) -o $@ $^
 
 clean:
 	echo $(dir)
@@ -59,6 +71,6 @@ clean:
 	echo "---"
 	echo $(ASM:%.s=$(OBJDIR)/%.o)
 	rm -rf obj/*
-	rm -rf build
+	rm -rf $(ROM_BUILD_DIR)
 
 rom: $(ROM_BUILD_DIR)/game.gb

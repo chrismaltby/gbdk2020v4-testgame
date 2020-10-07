@@ -1,15 +1,17 @@
 CC = lcc
 ROM_BUILD_DIR = build/rom
 CART_SIZE = 16
-COLOR = 1
-DEBUG = 1
+COLOR =
+DEBUG =
+RELEASE = 1
 OBJDIR = obj
-CFLAGS = -Iinclude
+CFLAGS = -Iinclude -Wf--debug -Wl-m -Wl-w -Wl-y
 LFLAGS_NBANKS += -Wl-yo$(CART_SIZE) -Wl-ya4
 LFLAGS = -Wl-yt27 $(LFLAGS_NBANKS)
 
 ifdef RELEASE
 CFLAGS += -Wf'--max-allocs-per-node 50000'
+LFLAGS += -Wf--debug -Wl-m -Wl-w -Wl-y -Wl-j
 endif
 
 ifdef DEBUG

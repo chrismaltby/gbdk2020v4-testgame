@@ -18,26 +18,33 @@ void LoadTiles(UINT16 index) {
   UBYTE bank, size;
   UBYTE* data_ptr;
 
-  PUSH_BANK(DATA_PTRS_BANK);
+  SWITCH_ROM(5);
+
+  // PUSH_BANK(DATA_PTRS_BANK);
   bank = tileset_bank_ptrs[index].bank;
   data_ptr = (UBYTE*)(tileset_bank_ptrs[index].offset + (BankDataPtr(bank)));
-  POP_BANK;
+  // POP_BANK;
 
-  PUSH_BANK(bank);
+  // PUSH_BANK(bank);
+  SWITCH_ROM(6);
+
   size = *(data_ptr++);
   set_bkg_data(0, size, data_ptr);
-  POP_BANK;
+  // POP_BANK;
 }
 
 void LoadImage(UINT16 index) {
   UBYTE* data_ptr;
 
-  PUSH_BANK(DATA_PTRS_BANK);
+  SWITCH_ROM(5);
+
+  // PUSH_BANK(DATA_PTRS_BANK);
   image_bank = background_bank_ptrs[index].bank;
   data_ptr = (UBYTE*)(background_bank_ptrs[index].offset + (BankDataPtr(image_bank)));
-  POP_BANK;
+  // POP_BANK;
 
-  PUSH_BANK(image_bank);
+  // PUSH_BANK(image_bank);
+  SWITCH_ROM(6);
 
   LoadTiles(*(data_ptr++));
 
@@ -45,7 +52,7 @@ void LoadImage(UINT16 index) {
   image_tile_height = *(data_ptr++);
   image_ptr = data_ptr;
 
-  POP_BANK;
+  // POP_BANK;
 }
 
 void LoadScene(UINT16 index) {
@@ -60,6 +67,7 @@ void LoadScene(UINT16 index) {
   POP_BANK;
 
   PUSH_BANK(bank);
+  // LoadImage(1);
   LoadImage((*(data_ptr++) * 256) + *(data_ptr++));
 
   POP_BANK;

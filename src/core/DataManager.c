@@ -9,7 +9,7 @@
 
 BankPtr bank_ptr;
 UBYTE image_bank;
-UBYTE collision_bank;
+UBYTE collision_bank2;
 unsigned char* image_ptr;
 UBYTE image_tile_width;
 UBYTE image_tile_height;
@@ -66,7 +66,7 @@ void LoadImage(UINT16 index) {
 
 //   bank = scene_bank_ptrs[index].bank;
 //   data_ptr = (scene_bank_ptrs[index].offset + 0x4000);
-//   collision_bank = collision_bank_ptrs[index].bank;
+//   collision_bank2 = collision_bank2_ptrs[index].bank;
 //   // POP_BANK;
 
 //   SWITCH_ROM(bank);

@@ -1,8 +1,9 @@
 #include <gb/gb.h>
 #include <stdio.h>
 
-unsigned char test1;
-unsigned char test2;
+#define MAX_PROJECTILES 5
+#define MAX_ACTIVE_ACTORS 11
+#define MAX_ACTORS 31
 
 typedef struct _BankPtr
 {
@@ -10,33 +11,42 @@ typedef struct _BankPtr
   unsigned int offset;
 } BankPtr;
 
-const BankPtr scene_bank_ptrs[] = {{0x06, 0x3C53}};
+typedef struct _PROJECTILE {
+  UBYTE col_group;
+} Projectile;
 
-void TestFn2(unsigned char i)
-{
-  test2 = i;
-}
+typedef struct {
+  BankPtr hit_1_ptr;
+  BankPtr hit_2_ptr;
+} Actor;
 
-void TestFn(unsigned int index)
-{
-  static unsigned char bank; // Switching bank to be static stops the bug from triggering
-  unsigned int data_ptr;
+Projectile projectiles[MAX_PROJECTILES];
+UBYTE actors_active[MAX_ACTIVE_ACTORS];
+Actor actors[MAX_ACTORS];
 
-  bank = scene_bank_ptrs[index].bank;
-  data_ptr = scene_bank_ptrs[index].offset;
-
-  /* This section doesn't matter but the bug doesn't trigger without it */
-  test1 = 1;
-  TestFn2(bank);
-  /**/
-
-  if (data_ptr == 0x3C53)
-  {
+void TestFn2(BankPtr* events_ptr) {
+  if (events_ptr->bank == 5 && events_ptr->offset == 0xFC00) {
     printf("OK\n");
   }
   else
   {
     printf("FAIL\n");
+  }
+}
+
+void TestFn() {
+  static UBYTE hit;
+  UBYTE i;
+
+  for (i = 0; i != 1; i++) {
+      hit = actors_active[0];
+      if (hit != 0xFF) {
+        if (projectiles[i].col_group == 2) {
+            TestFn2(&actors[hit].hit_1_ptr);
+        } else if (projectiles[i].col_group == 4) {
+            TestFn2(&actors[hit].hit_2_ptr);
+        }
+      }
   }
 }
 
@@ -47,7 +57,12 @@ int main()
   WX_REG = MAXWNDPOSX;
   WY_REG = MAXWNDPOSY;
 
-  TestFn(0);
+  projectiles[0].col_group = 2;
+  actors_active[0] = 0;
+  actors[0].hit_1_ptr.bank = 5;
+  actors[0].hit_1_ptr.offset = 0xFC00;
+
+  TestFn();
 
   return 0;
 }
